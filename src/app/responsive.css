@@ -1,0 +1,180 @@
+/* Mobile / tablet refinements: readable type sizes and comfortable tap targets.
+   Loaded after globals.css so these win at equal specificity. */
+@media (max-width: 760px) {
+  :root {
+    --section-pad: 72px;
+  }
+  body {
+    font-size: 15px;
+  }
+  .container {
+    padding-inline: 22px;
+  }
+  .section {
+    padding-block: var(--section-pad);
+  }
+  .section-heading h2 {
+    font-size: 26px;
+    line-height: 1.6;
+  }
+  /* Small labels */
+  .eyebrow {
+    font-size: 11px;
+  }
+  .support-en,
+  .image-disclosure,
+  .sample-note,
+  .sample-label,
+  .milestone-month,
+  .process-index,
+  .goals-note,
+  .muted {
+    font-size: 11px;
+    line-height: 1.8;
+  }
+  .sample-note {
+    margin-top: 22px;
+  }
+  /* Floor for tiny labels (the base styles go down to 7px) */
+  small,
+  dt,
+  dd,
+  .brand > span,
+  .hero-caption span,
+  .chapter strong,
+  .chapter-label span,
+  .roadmap-tabs button,
+  .weekly-title,
+  .day,
+  .minutes,
+  .support-photo > span,
+  .eyebrow,
+  .header-cta .button,
+  .footer a,
+  .footer-bottom small,
+  .process-index,
+  .approach-steps button span,
+  .weekly-title span,
+  .plan-bottom span,
+  .plan-bottom strong,
+  .comparison-table th span,
+  .footer-top p,
+  .is-active span {
+    font-size: 11px !important;
+  }
+  /* Body copy that was 10-12px */
+  .support-list p,
+  .body-copy,
+  .tb-pains span,
+  .tb-steps p,
+  .tb-criteria dd,
+  .guide-steps p,
+  .guide-books span {
+    font-size: 14px;
+    line-height: 1.95;
+  }
+  .support-list h3 {
+    font-size: 18px;
+  }
+  .support-list article {
+    grid-template-columns: 30px 1fr;
+    gap: 14px;
+  }
+  .support-layout {
+    gap: 48px;
+  }
+  /* Tap targets */
+  .text-link,
+  .path-next,
+  .journey-next,
+  .support-list .support-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .footer a,
+  footer a,
+  .mobile-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .button {
+    width: 100%;
+    max-width: 420px;
+  }
+  .header .button,
+  .tb-header .button {
+    width: auto;
+  }
+  summary {
+    min-height: 48px;
+  }
+  /* Keep the floating progress pill from covering the last lines of content */
+  main {
+    padding-bottom: 8px;
+  }
+  .site-footer,
+  footer.footer {
+    padding-bottom: 96px;
+  }
+  .tb-footer {
+    padding-bottom: 40px;
+  }
+  /* Textbook page */
+  .tb-hero-copy h1 {
+    font-size: 34px;
+  }
+  .tb-lead {
+    font-size: 14px;
+  }
+  .guide-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -22px;
+    padding: 4px 22px 8px;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+  .guide-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .guide-tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+  .guide-books li {
+    grid-template-columns: 72px 1fr;
+    gap: 14px;
+  }
+  .guide-books img {
+    width: 72px;
+  }
+  .tb-steps li {
+    padding-top: 18px;
+  }
+  .tb-step-n {
+    font-size: 36px;
+  }
+  .tb-pains li {
+    padding: 26px 22px;
+  }
+  .tb-cta {
+    padding: 80px 0;
+  }
+  .tb-cta .button {
+    margin-inline: auto;
+  }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .container {
+    padding-inline: 40px;
+  }
+  .section {
+    padding-block: 88px;
+  }
+  .guide-panel {
+    padding: 32px;
+  }
+}

@@ -120,7 +120,7 @@ export function Support() {
       en: "What & How to Study",
       title: "何を、どのように学ぶか。",
       text: "選んだ教材を、いつ・どこまで・どう進めるかまで具体的に落とし込みます。毎日の迷いをなくし、生活の中で続けられる形にします。",
-      href: "/textbooks#guide",
+      href: "/textbooks",
       cta: "学習の進め方の例を見る",
     },
     {

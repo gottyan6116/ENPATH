@@ -3,6 +3,7 @@ import Script from "next/script";
 import "@fontsource-variable/noto-sans-jp";
 import "@fontsource-variable/inter";
 import "./globals.css";
+import "./responsive.css";
 import { gtmId, siteUrl, readyForIndexing } from "@/lib/config";
 const title = "ENPATH｜英語学習に、あなただけの道筋を。";
 const description =
@@ -32,7 +33,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ja">
+    <html lang="ja" data-scroll-behavior="smooth">
       <body>
         {children}
         {gtmId && (
