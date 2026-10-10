@@ -10,6 +10,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { SectionHeading } from "./SectionHeading";
+import { TrackedLink } from "./TrackedLink";
 import { Photo } from "./Photo";
 import { BookingLink } from "./BookingLink";
 
@@ -96,32 +97,42 @@ export function Goals() {
   );
 }
 export function Support() {
-  const items = [
-    [
-      "Goal Setting",
-      "目標を、一緒に明確に。",
-      "英語を使って何をしたいのか。想いを具体的な目標に変え、学ぶ理由をはっきりさせます。",
-    ],
-    [
-      "Personalized Learning Plan",
-      "あなたに合う学習計画。",
-      "英語力・期限・生活リズムを踏まえ、取り組む内容と時間を整理。毎日の迷いを減らします。",
-    ],
-    [
-      "Learning Habit Support",
-      "続けられる習慣づくり。",
-      "忙しい日も含めて学習の進め方を考え、生活の中で無理なく取り組める形を探します。",
-    ],
-    [
-      "Progress Tracking",
-      "変化が見える振り返り。",
-      "学習量だけでなく、できるようになったことも確認。次に取り組む課題が見えてきます。",
-    ],
-    [
-      "Regular Coaching",
-      "一人にしない、伴走。",
-      "定期的な対話を通じて悩みや進捗を共有。状況に合わせて計画を見直していきます。",
-    ],
+  const items: {
+    en: string;
+    title: string;
+    text: string;
+    href?: string;
+    cta?: string;
+  }[] = [
+    {
+      en: "Goal Setting",
+      title: "目標を、一緒に明確に。",
+      text: "英語を使って何をしたいのか。想いを具体的な目標に変え、学ぶ理由をはっきりさせます。",
+    },
+    {
+      en: "Personalized Plan & Textbook",
+      title: "あなたに合う学習計画と教材。",
+      text: "英語力・期限・生活リズムを踏まえ、取り組む内容と時間を整理。数多くの教材の中から、プロがあなたに合う一冊を選定します。",
+      href: "/textbooks",
+      cta: "教材の選び方を見る",
+    },
+    {
+      en: "What & How to Study",
+      title: "何を、どのように学ぶか。",
+      text: "選んだ教材を、いつ・どこまで・どう進めるかまで具体的に落とし込みます。毎日の迷いをなくし、生活の中で続けられる形にします。",
+      href: "/textbooks#guide",
+      cta: "学習の進め方の例を見る",
+    },
+    {
+      en: "Progress Tracking",
+      title: "変化が見える振り返り。",
+      text: "学習量だけでなく、できるようになったことも確認。次に取り組む課題が見えてきます。",
+    },
+    {
+      en: "Regular Coaching",
+      title: "一人にしない、伴走。",
+      text: "定期的な対話を通じて悩みや進捗を共有。状況に合わせて計画を見直していきます。",
+    },
   ];
   return (
     <section id="support" className="section support-section">
@@ -141,13 +152,23 @@ export function Support() {
           </p>
         </div>
         <div className="support-list">
-          {items.map(([en, title, text], i) => (
+          {items.map(({ en, title, text, href, cta }, i) => (
             <article key={en}>
               <span className="support-number">0{i + 1}</span>
               <div>
                 <span className="support-en">{en}</span>
                 <h3>{title}</h3>
                 <p>{text}</p>
+                {href && cta && (
+                  <TrackedLink
+                    href={href}
+                    placement={`support_0${i + 1}`}
+                    className="text-link support-link"
+                  >
+                    {cta}
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </TrackedLink>
+                )}
               </div>
             </article>
           ))}

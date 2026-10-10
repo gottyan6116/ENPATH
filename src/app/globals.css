@@ -1025,6 +1025,13 @@ section[id] {
   line-height: 2;
   margin-top: 8px;
 }
+.support-list .support-link {
+  margin-top: 16px;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--teal-dark);
+  border-bottom-color: var(--teal-dark);
+}
 .comparison-section {
   background: var(--gray);
 }

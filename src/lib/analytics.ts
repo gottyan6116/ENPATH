@@ -4,7 +4,9 @@ type EventName =
   | "hero_chapter_select"
   | "service_section_view"
   | "roadmap_interaction"
-  | "consultation_booking_click";
+  | "consultation_booking_click"
+  | "textbook_page_link_click"
+  | "textbook_guide_select";
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];

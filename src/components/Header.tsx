@@ -6,6 +6,7 @@ import { BookingLink } from "./BookingLink";
 const links = [
   ["サービス紹介", "#about"],
   ["特徴", "#support"],
+  ["教材選定", "/textbooks"],
   ["コーチ", "#coach"],
   ["料金", "#pricing"],
   ["よくある質問", "#faq"],

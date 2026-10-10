@@ -8,11 +8,13 @@ export function BookingLink({
   compact = false,
   light = false,
   final = false,
+  placement,
 }: {
   hero?: boolean;
   compact?: boolean;
   light?: boolean;
   final?: boolean;
+  placement?: string;
 }) {
   if (final && !bookingUrl)
     return (
@@ -24,14 +26,15 @@ export function BookingLink({
   return (
     <a
       className={`button ${compact ? "button-small" : ""} ${light ? "button-light" : ""}`}
-      href={bookingUrl ?? "#consultation"}
+      href={bookingUrl ?? "/#consultation"}
       target={bookingUrl ? "_blank" : undefined}
       rel={bookingUrl ? "noopener noreferrer" : undefined}
       onClick={() => {
         if (hero) track("hero_cta_click", { connected: Boolean(bookingUrl) });
         if (bookingUrl)
           track("consultation_booking_click", {
-            placement: hero ? "hero" : final ? "consultation" : "page",
+            placement:
+              placement ?? (hero ? "hero" : final ? "consultation" : "page"),
           });
       }}
     >
