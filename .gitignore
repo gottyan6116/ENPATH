@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env*
+!.env.example
+test-results/
+playwright-report/
+*.tsbuildinfo
+
+# Original design references (production copies live in public/)
+/Hero-section.png
+/logo.png
+/スクリーンショット 2026-10-09 140640.png
