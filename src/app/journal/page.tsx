@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import {
   journalCategories,
@@ -15,9 +14,13 @@ import {
   JournalShell,
   JournalCTA,
   ArticleCard,
-  ArticleDate,
 } from "@/components/journal/Journal";
 import { JournalLink } from "@/components/journal/JournalTracking";
+import {
+  JournalHero,
+  type HeroSlide,
+} from "@/components/journal/JournalHero";
+import { JournalReveal } from "@/components/journal/JournalReveal";
 import { readyForIndexing } from "@/lib/config";
 import s from "@/components/journal/journal.module.css";
 type Props = { searchParams: Promise<JournalQuery> };
@@ -65,21 +68,41 @@ export default async function JournalPage({ searchParams }: Props) {
   const filtered = selected
     ? articles.filter((article) => article.category === selected.id)
     : articles;
-  const featured = filtered.find((article) => article.featured);
-  const latest = filtered.filter((article) => article.slug !== featured?.slug);
+  // Hero stories: published featured articles first, then the newest ones.
+  const heroArticles = [
+    ...filtered.filter((article) => article.featured),
+    ...filtered.filter((article) => !article.featured),
+  ].slice(0, 3);
+  const slides: HeroSlide[] = heroArticles.map((article) => ({
+    slug: article.slug,
+    href: articleHref(article.slug, preview),
+    title: article.title,
+    category: article.category,
+    categoryLabel: categoryLabel(article.category),
+    description: article.description,
+    coverImage: article.coverImage,
+  }));
+  const latest = filtered.filter(
+    (article) => !heroArticles.some((item) => item.slug === article.slug),
+  );
   return (
     <JournalShell preview={preview}>
+      <JournalHero
+        slides={slides}
+        fallbackImage="/media/planning.webp"
+        compact={Boolean(selected)}
+        preview={preview}
+        heading={
+          selected
+            ? {
+                label: "ENPATH JOURNAL",
+                title: selected.label,
+                description: selected.description,
+              }
+            : undefined
+        }
+      />
       <div className={s.wrap}>
-        <header className={s.hero}>
-          <p className={s.eyebrow}>ENPATH JOURNAL</p>
-          <h1>
-            英語と、
-            <br className={s.mobileBreak} />
-            学びの話。
-          </h1>
-          <p className={s.lead}>{journalDescription}</p>
-          <span className={s.heroNote}>READ. THINK. FIND YOUR PATH.</span>
-        </header>
         <nav aria-label="記事カテゴリ" className={s.filters}>
           {[
             { id: "all", label: "すべて", description: "すべての読みもの" },
@@ -103,45 +126,6 @@ export default async function JournalPage({ searchParams }: Props) {
             </JournalLink>
           ))}
         </nav>
-        {selected && (
-          <p className={s.filterDescription}>{selected.description}</p>
-        )}
-        {featured && (
-          <section className={s.featured} aria-labelledby="featured-heading">
-            <JournalLink
-              href={articleHref(featured.slug, preview)}
-              fields={{
-                slug: featured.slug,
-                category: featured.category,
-                title: featured.title,
-              }}
-              preview={preview}
-              className={s.featuredLink}
-            >
-              <div className={s.featuredImage}>
-                <Image
-                  src={featured.coverImage}
-                  alt=""
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 60vw"
-                />
-              </div>
-              <div className={s.featuredText}>
-                <p className={s.eyebrow}>FEATURED STORY</p>
-                <p className={s.category}>{categoryLabel(featured.category)}</p>
-                <h2 id="featured-heading">{featured.title}</h2>
-                <p className={s.summary}>{featured.description}</p>
-                <div className={s.date}>
-                  <ArticleDate article={featured} />
-                </div>
-                <span className={s.textLink}>
-                  記事を読む <span aria-hidden="true">↗</span>
-                </span>
-              </div>
-            </JournalLink>
-          </section>
-        )}
         <section className={s.latest} aria-labelledby="latest-heading">
           <div className={s.sectionTitle}>
             <h2 id="latest-heading">
@@ -150,7 +134,7 @@ export default async function JournalPage({ searchParams }: Props) {
             <span>{String(filtered.length).padStart(2, "0")} STORIES</span>
           </div>
           {latest.length > 0 ? (
-            <div className={s.grid}>
+            <JournalReveal className={s.grid}>
               {latest.map((article) => (
                 <ArticleCard
                   key={article.slug}
@@ -158,12 +142,12 @@ export default async function JournalPage({ searchParams }: Props) {
                   preview={preview}
                 />
               ))}
-            </div>
+            </JournalReveal>
           ) : (
             <div className={s.empty}>
               <p className={s.eyebrow}>COMING SOON</p>
               <h3>
-                {featured
+                {heroArticles.length > 0
                   ? "次の読みものを、準備しています。"
                   : "読みものは、ただいま準備しています。"}
               </h3>
