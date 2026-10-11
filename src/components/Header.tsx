@@ -1,34 +1,67 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { BookingLink } from "./BookingLink";
+import { featureLinks } from "@/content/features";
 const links = [
-  ["サービス紹介", "#about"],
-  ["特徴", "#support"],
-  ["教材選定", "/textbooks"],
-  ["コーチ", "#coach"],
-  ["料金", "#pricing"],
-  ["よくある質問", "#faq"],
+  ["コーチ", "/#coach"],
+  ["料金", "/#pricing"],
+  ["よくある質問", "/#faq"],
 ];
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [featuresOpen, setFeaturesOpen] = useState(false);
+  const [mobileFeatures, setMobileFeatures] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
+  const featureToggle = useRef<HTMLButtonElement>(null);
+  const group = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const closeAll = () => {
+    setOpen(false);
+    setFeaturesOpen(false);
+    setMobileFeatures(false);
+  };
   useEffect(() => {
-    if (!open) return;
-    const close = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+    closeAll();
+  }, [pathname]);
+  useEffect(() => {
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (featuresOpen) {
+        setFeaturesOpen(false);
+        featureToggle.current?.focus();
+      } else if (open) {
         setOpen(false);
+        setMobileFeatures(false);
         toggle.current?.focus();
       }
     };
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
-  }, [open]);
+    const outside = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !group.current?.contains(event.target)
+      )
+        setFeaturesOpen(false);
+    };
+    document.addEventListener("keydown", escape);
+    document.addEventListener("pointerdown", outside);
+    return () => {
+      document.removeEventListener("keydown", escape);
+      document.removeEventListener("pointerdown", outside);
+    };
+  }, [featuresOpen, open]);
   return (
     <header className="header">
       <div className="header-inner">
-        <a href="#top" className="brand" aria-label="ENPATH ホーム">
+        <Link
+          href="/"
+          className="brand"
+          aria-label="ENPATH ホーム"
+          onClick={closeAll}
+        >
           <Image
             src="/logo.png"
             width={180}
@@ -37,12 +70,72 @@ export function Header() {
             priority
           />
           <span>YOUR ENGLISH. YOUR PATH.</span>
-        </a>
+        </Link>
         <nav aria-label="メインナビゲーション" className="desktop-nav">
+          <div
+            className="feature-menu-group"
+            ref={group}
+            onPointerEnter={(event) => {
+              if (event.pointerType === "mouse") setFeaturesOpen(true);
+            }}
+            onPointerLeave={(event) => {
+              if (
+                event.pointerType === "mouse" &&
+                !group.current?.contains(document.activeElement)
+              )
+                setFeaturesOpen(false);
+            }}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget as Node))
+                setFeaturesOpen(false);
+            }}
+          >
+            <button
+              ref={featureToggle}
+              className="feature-toggle"
+              aria-expanded={featuresOpen}
+              aria-controls="feature-menu"
+              onClick={() => setFeaturesOpen((value) => !value)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  setFeaturesOpen(true);
+                  requestAnimationFrame(() =>
+                    group.current
+                      ?.querySelector<HTMLAnchorElement>(".feature-dropdown a")
+                      ?.focus(),
+                  );
+                }
+              }}
+            >
+              ENPATHの特徴 <ChevronDown size={15} />
+            </button>
+            <div
+              id="feature-menu"
+              className="feature-dropdown"
+              hidden={!featuresOpen}
+            >
+              <p>あなたに合う学び方を、見つける。</p>
+              {featureLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={pathname === item.href ? "page" : undefined}
+                  onClick={closeAll}
+                >
+                  <span>
+                    <strong>{item.title}</strong>
+                    <small>{item.description}</small>
+                  </span>
+                  <ArrowRight size={18} />
+                </Link>
+              ))}
+            </div>
+          </div>
           {links.map(([label, href]) => (
-            <a key={href} href={href}>
+            <Link key={href} href={href} onClick={closeAll}>
               {label}
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="header-cta">
@@ -54,7 +147,10 @@ export function Header() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "メニューを閉じる" : "メニューを開く"}
-          onClick={() => setOpen(!open)}
+          onClick={() => {
+            setOpen(!open);
+            setMobileFeatures(false);
+          }}
         >
           {open ? <X /> : <Menu />}
         </button>
@@ -65,20 +161,41 @@ export function Header() {
         className="mobile-nav"
         hidden={!open}
       >
+        <button
+          className="mobile-feature-toggle"
+          aria-expanded={mobileFeatures}
+          aria-controls="mobile-features"
+          onClick={() => setMobileFeatures(!mobileFeatures)}
+        >
+          ENPATHの特徴 <ChevronDown size={18} />
+        </button>
+        <div
+          id="mobile-features"
+          className="mobile-feature-links"
+          hidden={!mobileFeatures}
+        >
+          {featureLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={closeAll}
+              aria-current={pathname === item.href ? "page" : undefined}
+            >
+              {item.title}
+              <ArrowRight size={16} />
+            </Link>
+          ))}
+        </div>
         {links.map(([label, href]) => (
-          <a key={href} href={href} onClick={() => setOpen(false)}>
+          <Link key={href} href={href} onClick={closeAll}>
             {label}
-            <Arrow />
-          </a>
+            <ArrowRight size={16} />
+          </Link>
         ))}
-        <a href="#consultation" onClick={() => setOpen(false)}>
-          無料カウンセリング
-          <Arrow />
-        </a>
+        <div onClick={closeAll}>
+          <BookingLink compact />
+        </div>
       </nav>
     </header>
   );
-}
-function Arrow() {
-  return <span aria-hidden="true">↗</span>;
 }

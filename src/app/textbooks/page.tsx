@@ -1,5 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { FeatureExplorer } from "@/components/FeatureExplorer";
 import { ArrowDown } from "lucide-react";
 import { BookingLink } from "@/components/BookingLink";
 import { FloatingTexts } from "@/components/FloatingTexts";
@@ -13,24 +14,53 @@ const description =
 export const metadata = {
   title: "教材選定｜あなたの一冊を、プロが選ぶ",
   description,
-  alternates: { canonical: siteUrl ? new URL("/textbooks", siteUrl).href : null },
+  alternates: {
+    canonical: siteUrl ? new URL("/textbooks", siteUrl).href : null,
+  },
 };
 
 const pains = [
-  ["書店やネットで、どれを選べばいいか分からない。", "レベルも目的もばらばらな教材が、無数に並んでいる。"],
-  ["買ったのに、最後まで終わらない。", "難しすぎた、量が多すぎた。理由が分からないまま積まれていく。"],
-  ["やっているのに、力がついている実感がない。", "どの順で、どこまでやれば良いのかが決まっていない。"],
+  [
+    "書店やネットで、どれを選べばいいか分からない。",
+    "レベルも目的もばらばらな教材が、無数に並んでいる。",
+  ],
+  [
+    "買ったのに、最後まで終わらない。",
+    "難しすぎた、量が多すぎた。理由が分からないまま積まれていく。",
+  ],
+  [
+    "やっているのに、力がついている実感がない。",
+    "どの順で、どこまでやれば良いのかが決まっていない。",
+  ],
 ];
 
 const steps = [
-  ["01", "Listening", "目的とレベルを伺う", "英語を使う場面、期限、現在の英語力、使える時間をカウンセリングで確認します。"],
-  ["02", "Selection", "プロが教材を選定", "数多くの教材の中から、あなたの目的とレベルに合うものをコーチが絞り込みます。多ければ良いわけではなく、まず1〜3冊に。"],
-  ["03", "Design", "使い方まで落とし込む", "いつ・どこで・どこまで・どうやるか。週単位の計画に教材の範囲を割り当て、進み具合に応じて見直します。"],
+  [
+    "01",
+    "Listening",
+    "目的とレベルを伺う",
+    "英語を使う場面、期限、現在の英語力、使える時間をカウンセリングで確認します。",
+  ],
+  [
+    "02",
+    "Selection",
+    "プロが教材を選定",
+    "数多くの教材の中から、あなたの目的とレベルに合うものをコーチが絞り込みます。多ければ良いわけではなく、まず1〜3冊に。",
+  ],
+  [
+    "03",
+    "Design",
+    "使い方まで落とし込む",
+    "いつ・どこで・どこまで・どうやるか。週単位の計画に教材の範囲を割り当て、進み具合に応じて見直します。",
+  ],
 ];
 
 const criteria = [
   ["目的との一致", "会議、試験、旅行。ゴールで必要な力は変わります。"],
-  ["今のレベルとの距離", "少し頑張れば届く難しさ。易しすぎても、難しすぎても続きません。"],
+  [
+    "今のレベルとの距離",
+    "少し頑張れば届く難しさ。易しすぎても、難しすぎても続きません。",
+  ],
   ["生活の中で続く量", "通勤や夜の15分でも回せる、1回の分量と構成を選びます。"],
 ];
 
@@ -40,12 +70,8 @@ export default function Textbooks() {
       <a className="skip-link" href="#main">
         本文へスキップ
       </a>
-      <header className="tb-header">
-        <Link href="/" className="brand" aria-label="ENPATH ホームへ戻る">
-          <Image src="/logo.png" width={180} height={60} alt="ENPATH" priority />
-        </Link>
-        <BookingLink compact placement="textbooks_header" />
-      </header>
+      <div id="top" />
+      <Header />
       <main id="main" className="tb-page">
         <section className="tb-hero" aria-labelledby="tb-title">
           <FloatingTexts />
@@ -129,11 +155,13 @@ export default function Textbooks() {
             </SectionHeading>
             <TextbookGuide />
             <p className="sample-note">
-              ※ 掲載は説明用のサンプルです。実際の教材と進め方は、カウンセリングで伺う目的・レベル・生活リズムに応じて個別に決定します。特定の教材の購入を条件とするものではなく、成果を保証するものでもありません。書影は教材の例示であり、各書籍の著作権・商標は各権利者に帰属します。
+              ※
+              掲載は説明用のサンプルです。実際の教材と進め方は、カウンセリングで伺う目的・レベル・生活リズムに応じて個別に決定します。特定の教材の購入を条件とするものではなく、成果を保証するものでもありません。書影は教材の例示であり、各書籍の著作権・商標は各権利者に帰属します。
             </p>
           </div>
         </section>
 
+        <FeatureExplorer related={[3, 2]} />
         <section className="tb-cta">
           <div className="container">
             <p className="eyebrow">FREE COUNSELING</p>
@@ -147,11 +175,7 @@ export default function Textbooks() {
           </div>
         </section>
       </main>
-      <footer className="tb-footer">
-        <Link href="/">ENPATH トップへ</Link>
-        <Link href="/privacy">プライバシーポリシー</Link>
-        <Link href="/legal">運営者情報・サービス条件</Link>
-      </footer>
+      <Footer />
     </>
   );
 }

@@ -18,16 +18,23 @@ test("a goal switch updates the plan, schedule and milestones together", async (
   await expect(panel).toContainText("学習計画サンプル");
 });
 
-test("without a booking provider the CTA cannot claim a completed reservation", async ({
+test("booking CTA uses the configured provider or the preparation notice", async ({
   page,
 }) => {
   await page.goto("/");
-  await page
+  const cta = page
     .locator(".hero-actions")
-    .getByRole("link", { name: "無料カウンセリングを予約する" })
-    .click();
-  await expect(page).toHaveURL(/#consultation$/);
-  await expect(page.getByRole("status")).toContainText("予約受付は準備中");
+    .getByRole("link", { name: "無料カウンセリングを予約する" });
+  const href = await cta.getAttribute("href");
+  if (href?.startsWith("https://")) {
+    await expect(cta).toHaveAttribute("target", "_blank");
+    await expect(cta).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(page.locator(".feature-explorer-links a")).toHaveCount(6);
+  } else {
+    await cta.click();
+    await expect(page).toHaveURL(/#consultation$/);
+    await expect(page.getByRole("status")).toContainText("予約受付は準備中");
+  }
   await expect(
     page.getByText("予約が完了しました", { exact: true }),
   ).toHaveCount(0);

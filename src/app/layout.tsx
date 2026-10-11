@@ -4,6 +4,7 @@ import "@fontsource-variable/noto-sans-jp";
 import "@fontsource-variable/inter";
 import "./globals.css";
 import "./responsive.css";
+import "./features.css";
 import { gtmId, siteUrl, readyForIndexing } from "@/lib/config";
 const title = "ENPATH｜英語学習に、あなただけの道筋を。";
 const description =

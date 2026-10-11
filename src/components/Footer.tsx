@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { featureLinks } from "@/content/features";
 export function Footer() {
   return (
     <footer className="footer">
@@ -12,10 +13,12 @@ export function Footer() {
             <p>英語学習に、あなただけの道筋を。</p>
           </div>
           <nav aria-label="フッターナビゲーション">
-            <a href="#about">サービス紹介</a>
-            <a href="#roadmap">学習計画のサンプル</a>
-            <a href="#support">サポート内容</a>
-            <a href="#faq">よくある質問</a>
+            {featureLinks.map((item) => (
+              <Link key={item.href} href={item.href}>
+                {item.title}
+              </Link>
+            ))}
+            <Link href="/#faq">よくある質問</Link>
           </nav>
         </div>
         <div className="footer-bottom">
