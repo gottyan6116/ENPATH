@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { BookingLink } from "./BookingLink";
 import { FeatureExplorer } from "./FeatureExplorer";
 import { FeatureComparison } from "./FeatureComparison";
+import { BridgeSection } from "./BridgeSection";
 import { Roadmap } from "./Roadmap";
 import { featureDetails, type FeatureKey } from "@/content/features";
 import { siteUrl } from "@/lib/config";
@@ -84,7 +85,10 @@ export function FeaturePage({ page }: { page: FeatureKey }) {
           </div>
         </section>
         {page === "overview" ? (
-          <FeatureComparison />
+          <>
+            <FeatureComparison />
+            <BridgeSection />
+          </>
         ) : (
           <section id="understand" className="feature-intro container">
             <h2>{data.question}</h2>
