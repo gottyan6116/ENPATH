@@ -1,0 +1,368 @@
+.section {
+  padding: 88px 0 72px;
+  background: #fff;
+  color: var(--navy);
+  scroll-margin-top: 100px;
+}
+.heading {
+  margin-bottom: 40px;
+}
+.eyebrow {
+  margin-bottom: 12px;
+  color: var(--teal-dark);
+  font: 500 13px var(--font-en);
+  letter-spacing: 0.16em;
+}
+.section .heading h2 {
+  font-size: clamp(27px, 2.9vw, 40px);
+  line-height: 1.6;
+  letter-spacing: -0.035em;
+}
+.lead {
+  max-width: 950px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 2;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+.card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+}
+.school {
+  background: #fafbfb;
+}
+.enpath {
+  background: #f1f9f5;
+  border-color: #d8e9e1;
+}
+.photo {
+  aspect-ratio: 4 / 3;
+  background: #f4f6f4;
+}
+.photo img {
+  width: 100%;
+  height: auto;
+}
+.cardBody {
+  padding: 22px 18px 26px;
+  flex: 1;
+}
+.section .card h3 {
+  font-size: 22px;
+  line-height: 1.65;
+  text-align: center;
+  font-weight: 650;
+}
+.enpath h3 {
+  color: var(--teal-dark);
+  font-family: var(--font-en);
+  letter-spacing: 0.05em;
+}
+.description {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.85;
+}
+.flow {
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+}
+.schoolFlow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.enpathFlow {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.flow li {
+  min-width: 0;
+  text-align: center;
+  position: relative;
+}
+.icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 10px;
+}
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.lesson .icon {
+  border-radius: 50%;
+  background: #d7eade;
+  box-shadow: 0 0 0 3px #a5cebc;
+}
+.lesson h4 {
+  color: var(--teal-dark);
+}
+.flow li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 35px;
+  right: -15px;
+  width: 19px;
+  height: 10px;
+  background: #c9dcd3;
+  clip-path: polygon(0 35%, 65% 35%, 65% 0, 100% 50%, 65% 100%, 65% 65%, 0 65%);
+}
+.flow h4 {
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.7;
+  margin-bottom: 6px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.flow p {
+  max-width: 120px;
+  margin: auto;
+  font-size: 12px;
+  line-height: 1.85;
+  color: #50636e;
+  text-wrap: pretty;
+}
+.tableWrap {
+  margin-top: 32px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+  line-height: 1.85;
+}
+.table th,
+.table td {
+  padding: 18px 22px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+.table th {
+  font-weight: 600;
+}
+.table thead {
+  background: var(--gray);
+}
+.table thead th:first-child {
+  width: 24%;
+  text-align: left;
+}
+.table thead th span {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #536671;
+}
+.table tbody th {
+  text-align: left;
+  background: #fafbfc;
+}
+.table tbody th > span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.table tbody th svg {
+  flex-shrink: 0;
+}
+.table td {
+  text-align: center;
+}
+.table tr > :last-child {
+  background: #f1f9f5;
+  color: #176253;
+  border-right: 0;
+}
+.table thead th:last-child {
+  background: #e0f0e7;
+  font-family: var(--font-en);
+  letter-spacing: 0.05em;
+}
+.table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.note {
+  margin-top: 18px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.mobileComparison {
+  display: none;
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .cardBody {
+    padding-inline: 12px;
+  }
+  .flow {
+    gap: 6px;
+  }
+  .icon {
+    width: 62px;
+    height: 62px;
+  }
+  .flow h4 {
+    font-size: 12px;
+  }
+  .flow p {
+    font-size: 11px;
+  }
+  .flow li:not(:last-child)::after {
+    top: 28px;
+    right: -13px;
+    width: 16px;
+  }
+}
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: 1fr;
+    max-width: 640px;
+    margin-inline: auto;
+    gap: 28px;
+  }
+  .photo {
+    aspect-ratio: 4 / 3;
+  }
+}
+@media (max-width: 600px) {
+  .section {
+    padding-block: 55px;
+    scroll-margin-top: 80px;
+  }
+  .heading {
+    margin-bottom: 26px;
+  }
+  .section .heading h2 {
+    font-size: 27px;
+    line-height: 1.6;
+    max-width: 340px;
+  }
+  .heading h2 span {
+    display: block;
+  }
+  .lead {
+    font-size: 14px;
+    margin-top: 16px;
+  }
+  .cards {
+    gap: 24px;
+  }
+  .card {
+    border-radius: 11px;
+  }
+  .cardBody {
+    padding: 20px 12px 24px;
+  }
+  .section .card h3 {
+    font-size: 19px;
+  }
+  .description {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .flow {
+    margin-top: 22px;
+    column-gap: 6px;
+  }
+  .icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 10px;
+  }
+  .flow h4 {
+    font-size: 12px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .schoolFlow h4 {
+    min-height: auto;
+  }
+  .flow p {
+    font-size: 12px;
+    line-height: 1.75;
+  }
+  .flow li:not(:last-child)::after {
+    top: 25px;
+    right: -12px;
+    width: 16px;
+    height: 9px;
+  }
+  .tableWrap {
+    display: none;
+  }
+  .mobileComparison {
+    display: block;
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    overflow: hidden;
+  }
+  .mobileRow + .mobileRow {
+    border-top: 1px solid var(--line);
+  }
+  .section .mobileRow h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    background: var(--gray);
+  }
+  .mobileRow dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+  }
+  .mobileRow dl > div {
+    padding: 15px 12px 18px;
+  }
+  .mobileRow dl > div:last-child {
+    background: #f1f9f5;
+    border-left: 1px solid var(--line);
+  }
+  .mobileRow dt {
+    font-size: 12px !important;
+    font-weight: 650;
+    line-height: 1.6;
+    min-height: 40px;
+  }
+  .mobileRow dt span {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 400;
+  }
+  .mobileRow dl > div:last-child dt {
+    color: var(--teal-dark);
+    font-family: var(--font-en);
+    font-size: 13px !important;
+  }
+  .mobileRow dd {
+    margin: 8px 0 0;
+    font-size: 13px !important;
+    line-height: 1.85;
+  }
+  .note {
+    margin-top: 16px;
+    font-size: 11px;
+  }
+}

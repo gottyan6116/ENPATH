@@ -4,7 +4,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { BookingLink } from "./BookingLink";
 import { FeatureExplorer } from "./FeatureExplorer";
-import { Comparison } from "./StorySections";
+import { FeatureComparison } from "./FeatureComparison";
 import { Roadmap } from "./Roadmap";
 import { featureDetails, type FeatureKey } from "@/content/features";
 import { siteUrl } from "@/lib/config";
@@ -83,11 +83,14 @@ export function FeaturePage({ page }: { page: FeatureKey }) {
             </ol>
           </div>
         </section>
-        <section id="understand" className="feature-intro container">
-          <h2>{data.question}</h2>
-          <p>{data.answer}</p>
-        </section>
-        {page === "overview" && <Comparison />}
+        {page === "overview" ? (
+          <FeatureComparison />
+        ) : (
+          <section id="understand" className="feature-intro container">
+            <h2>{data.question}</h2>
+            <p>{data.answer}</p>
+          </section>
+        )}
         <section className="feature-method container">
           <h2>{data.stepsTitle}</h2>
           <ol>
