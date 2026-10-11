@@ -10,6 +10,7 @@ const links = [
   ["コーチ", "/#coach"],
   ["料金", "/#pricing"],
   ["よくある質問", "/#faq"],
+  ["ENPATH JOURNAL", "/journal"],
 ];
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -133,7 +134,16 @@ export function Header() {
             </div>
           </div>
           {links.map(([label, href]) => (
-            <Link key={href} href={href} onClick={closeAll}>
+            <Link
+              key={href}
+              href={href}
+              onClick={closeAll}
+              aria-current={
+                href === "/journal" && pathname.startsWith("/journal")
+                  ? "page"
+                  : undefined
+              }
+            >
               {label}
             </Link>
           ))}
@@ -187,7 +197,16 @@ export function Header() {
           ))}
         </div>
         {links.map(([label, href]) => (
-          <Link key={href} href={href} onClick={closeAll}>
+          <Link
+            key={href}
+            href={href}
+            onClick={closeAll}
+            aria-current={
+              href === "/journal" && pathname.startsWith("/journal")
+                ? "page"
+                : undefined
+            }
+          >
             {label}
             <ArrowRight size={16} />
           </Link>

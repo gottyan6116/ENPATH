@@ -15,6 +15,7 @@ import { Footer } from "@/components/Footer";
 import { ServiceObserver } from "@/components/ServiceObserver";
 import { ScrollExperience } from "@/components/ScrollExperience";
 import { siteUrl } from "@/lib/config";
+import { JournalTeaser } from "@/components/journal/Journal";
 export default function Home() {
   return (
     <>
@@ -36,6 +37,7 @@ export default function Home() {
         <Coach />
         <Pricing />
         <FAQ />
+        <JournalTeaser />
         <Consultation />
       </main>
       <Footer />

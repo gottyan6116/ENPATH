@@ -6,7 +6,11 @@ type EventName =
   | "roadmap_interaction"
   | "consultation_booking_click"
   | "textbook_page_link_click"
-  | "textbook_guide_select";
+  | "textbook_guide_select"
+  | "journal_article_view"
+  | "journal_category_select"
+  | "journal_cta_click"
+  | "journal_related_article_click";
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];

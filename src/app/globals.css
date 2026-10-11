@@ -2922,3 +2922,15 @@ section[id] {
     animation: none;
   }
 }
+/* JOURNAL navigation stays usable at tablet widths. */
+.desktop-nav a[aria-current="page"] { color: var(--teal-dark); }
+.desktop-nav a[aria-current="page"]::after { width: 100%; }
+@media (min-width: 761px) and (max-width: 960px) {
+  .header .desktop-nav, .header .header-cta { display: none; }
+  .header .menu-toggle { display: flex; }
+  .header .mobile-nav { position: absolute; top: 78px; left: 0; right: 0; background: white; padding: 20px 32px 28px; border-bottom: 1px solid var(--line); max-height: calc(100dvh - 78px); overflow-y: auto; }
+  .header .mobile-nav[hidden] { display: none; }
+  .header .mobile-nav:not([hidden]) { display: block; }
+  .header .mobile-nav a:not(.button) { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .header .mobile-nav .button { margin-top: 18px; }
+}

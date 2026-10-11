@@ -19,6 +19,7 @@ export function Footer() {
               </Link>
             ))}
             <Link href="/#faq">よくある質問</Link>
+            <Link href="/journal">ENPATH JOURNAL</Link>
           </nav>
         </div>
         <div className="footer-bottom">
