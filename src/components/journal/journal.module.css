@@ -1,5 +1,6 @@
 .main {
-  background: #fcfcf9;
+  --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: #faf7f1;
   color: var(--navy);
 }
 .wrap {
@@ -47,29 +48,52 @@
 }
 .filters {
   display: flex;
-  gap: 32px;
-  padding: 27px 0;
-  border-bottom: 1px solid var(--line);
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 40px;
+  padding: 0;
+  border-bottom: 1px solid #e4ded2;
+}
+.filterLabel {
+  font: 500 11px var(--font-en);
+  letter-spacing: 0.22em;
+  color: #6f6a62;
+  white-space: nowrap;
+}
+.filterLabel i {
+  font-style: normal;
+  margin-left: 14px;
+}
+.filterList {
+  display: flex;
+  gap: 44px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filterList::-webkit-scrollbar {
+  display: none;
 }
 .filters a {
-  font-size: 13px;
-  padding: 5px 0;
+  font-family: var(--serif, "Noto Serif JP Variable", serif);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  padding: 24px 0 22px;
   position: relative;
-  color: #596972;
+  color: #4b463f;
+  white-space: nowrap;
+  min-height: 44px;
 }
 .filters a[aria-current="page"] {
-  color: var(--teal-dark);
-  font-weight: 700;
+  color: #2a2622;
+  font-weight: 600;
 }
 .filters a[aria-current="page"]:after {
   content: "";
   position: absolute;
-  bottom: -28px;
+  bottom: -1px;
   left: 0;
   right: 0;
-  height: 2px;
-  background: var(--teal-dark);
+  height: 1px;
+  background: #2a2622;
 }
 .filterDescription {
   color: #596972;
@@ -155,29 +179,37 @@
   margin-top: 18px;
 }
 .latest {
-  padding: 66px 0 76px;
+  padding: 72px 0 84px;
 }
 .sectionTitle {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   gap: 16px;
 }
 .sectionTitle h2 {
-  font-size: 22px;
+  font-family: var(--serif, "Noto Serif JP Variable", serif);
+  font-size: clamp(26px, 2.6vw, 34px);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
+  color: #2a2622;
+}
+.sectionTitle p {
+  margin-top: 8px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #6f6a62;
 }
 .sectionTitle > span {
-  font: 10px var(--font-en);
-  letter-spacing: 0.13em;
-  color: #65736e;
+  font: 500 11px var(--font-en);
+  letter-spacing: 0.18em;
+  color: #6f6a62;
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 44px 28px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 48px 28px;
 }
 .card {
   min-width: 0;
@@ -186,27 +218,54 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  gap: 18px;
 }
 .cardImage {
-  aspect-ratio: 16/9;
+  aspect-ratio: 4/3;
+  border-radius: 2px;
 }
 .cardText {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
-.card h3 {
-  font-size: 18px;
-  line-height: 1.85;
-  font-weight: 600;
+.card .category {
   margin: 0 0 10px;
+  align-self: flex-start;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #6f6a62;
+  border: 1px solid #ddd6c8;
+  border-radius: 999px;
+  padding: 1px 12px;
+}
+.card h3 {
+  font-family: var(--serif, "Noto Serif JP Variable", serif);
+  font-size: 17px;
+  line-height: 1.85;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #2a2622;
+  margin: 0 0 10px;
+  transition: color 0.3s;
+}
+.cardLink:hover h3 {
+  color: var(--teal-dark);
 }
 .card .summary {
-  margin: 0 0 22px;
+  display: none;
 }
 .card .date {
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: 8px;
+  color: #8a847a;
+}
+.card .date span:last-child {
+  display: inline-block;
+  transition: transform 0.3s;
+}
+.cardLink:hover .date span:last-child {
+  transform: translateX(4px);
 }
 .empty {
   padding: 62px 28px;
@@ -602,5 +661,64 @@
   .featuredLink:hover img,
   .cardLink:hover img {
     transform: none;
+  }
+}
+
+/* ---- Editorial listing: responsive ---- */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .filters {
+    gap: 16px;
+    padding: 0;
+  }
+  .filterLabel {
+    display: none;
+  }
+  .filterList {
+    gap: 28px;
+    margin-inline: -22px;
+    padding-inline: 22px;
+    width: calc(100% + 44px);
+  }
+  .filters a {
+    font-size: 13px;
+    padding: 18px 0 16px;
+    border-bottom: 0;
+  }
+  .filters a[aria-current="page"]:after {
+    display: block;
+  }
+  .latest {
+    padding: 48px 0 56px;
+  }
+  .sectionTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    gap: 10px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .cardLink {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .cardImage {
+    aspect-ratio: 1 / 1;
+  }
+  .card h3 {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .card .category {
+    font-size: 10.5px;
   }
 }

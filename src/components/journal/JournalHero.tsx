@@ -1,24 +1,15 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { track } from "@/lib/analytics";
+import { fallbackSlides, heroImages } from "@/content/journalHero";
+import { FeaturedStory, type HeroSlide } from "./FeaturedStory";
 import s from "./journalHero.module.css";
 
-export type HeroSlide = {
-  slug: string;
-  href: string;
-  title: string;
-  category: string;
-  categoryLabel: string;
-  description: string;
-  coverImage: string;
-};
+export type { HeroSlide };
 
 type Props = {
   slides: HeroSlide[];
-  fallbackImage: string;
   compact?: boolean;
   preview?: boolean;
   /** Category pages replace the main headline. */
@@ -26,67 +17,70 @@ type Props = {
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");
+const quiet = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-export function JournalHero({
-  slides,
-  fallbackImage,
-  compact = false,
-  preview = false,
-  heading,
-}: Props) {
+export function JournalHero({ slides, compact = false, preview = false, heading }: Props) {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const gsapRef = useRef<typeof import("gsap").gsap | null>(null);
   const swipe = useRef<number | null>(null);
-  const images = slides.length ? slides.map((x) => x.coverImage) : [fallbackImage];
-  const many = slides.length > 1 && !compact;
+
+  // Slide 1 keeps the brand cover photo; later slides use their own cover.
+  const images = slides.length
+    ? [heroImages.main, ...slides.slice(1).map((x) => x.coverImage)]
+    : fallbackSlides.map((x) => x.image);
+  const count = slides.length || fallbackSlides.length;
+  const many = count > 1 && !compact;
 
   const go = useCallback(
     (to: number) => {
       const el = root.current;
-      const count = slides.length;
       if (!el || count < 2) return;
       const next = (to + count) % count;
-      const prev = activeRef.current;
-      if (next === prev) return;
+      if (next === activeRef.current) return;
       activeRef.current = next;
       setActive(next);
-      const gsap = gsapRef.current;
       const q = (sel: string) => Array.from(el.querySelectorAll<HTMLElement>(sel));
       const imgs = q("[data-slide]");
       const stories = q("[data-story]");
+      const decos = q("[data-deco]");
+      const gsap = gsapRef.current;
       if (!gsap) {
         imgs.forEach((n, i) => (n.style.opacity = i === next ? "1" : "0"));
         stories.forEach((n, i) => (n.style.visibility = i === next ? "visible" : "hidden"));
+        decos.forEach((n) => (n.style.opacity = next === 0 ? "1" : "0"));
         return;
       }
-      const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const t = quiet() ? 0 : 1;
       imgs.forEach((n, i) => {
-        if (i === next) {
-          gsap.fromTo(
-            n,
-            { opacity: n.style.opacity ? Number(n.style.opacity) : 0, scale: 1.07 },
-            { opacity: 1, scale: 1, duration: still ? 0 : 1.2, ease: "power2.out", overwrite: true },
-          );
-        } else {
-          gsap.to(n, { opacity: 0, duration: still ? 0 : 0.9, ease: "power1.inOut", overwrite: true });
-        }
+        if (i === next)
+          gsap.fromTo(n, { opacity: Number(gsap.getProperty(n, "opacity")) || 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 0.9 * t, ease: "power2.out", overwrite: true });
+        else gsap.to(n, { opacity: 0, duration: 0.7 * t, ease: "power2.out", overwrite: true });
       });
+      gsap.to(decos, { opacity: next === 0 ? 1 : 0, duration: 0.6 * t, overwrite: true });
       stories.forEach((n, i) => {
+        // Kill any in-flight exit tween first, otherwise its onComplete can hide the story we are showing.
+        gsap.killTweensOf(n);
         if (i === next) {
-          gsap.set(n, { visibility: "visible" });
+          gsap.set(n, { visibility: "visible", opacity: 1 });
           gsap.fromTo(
             n.querySelectorAll("[data-in]"),
-            { y: 22, opacity: 0 },
-            { y: 0, opacity: 1, duration: still ? 0 : 0.7, ease: "power3.out", stagger: still ? 0 : 0.08, delay: still ? 0 : 0.15, overwrite: true },
+            { y: 24, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7 * t, ease: "power2.out", stagger: 0.08 * t, delay: 0.1 * t, overwrite: true },
           );
         } else {
-          gsap.to(n, { opacity: 0, duration: still ? 0 : 0.2, overwrite: true, onComplete: () => { gsap.set(n, { visibility: "hidden", opacity: 1 }); } });
+          gsap.to(n, {
+            opacity: 0,
+            duration: 0.25 * t,
+            onComplete: () => {
+              if (activeRef.current !== i) gsap.set(n, { visibility: "hidden" });
+            },
+          });
         }
       });
     },
-    [slides.length],
+    [count],
   );
 
   useEffect(() => {
@@ -102,49 +96,66 @@ export function JournalHero({
         if (disposed) return;
         gsap.registerPlugin(ScrollTrigger);
         gsapRef.current = gsap;
+        const one = (sel: string) => el.querySelector<HTMLElement>(sel);
         const mm = gsap.matchMedia();
-        mm.add("(prefers-reduced-motion: no-preference)", () => {
-          const photo = el.querySelector<HTMLElement>("[data-photo]");
-          const zoom = el.querySelector<HTMLElement>("[data-zoom]");
-          const copy = el.querySelector<HTMLElement>("[data-copy]");
-          const lines = el.querySelectorAll("[data-line]");
-          const fades = el.querySelectorAll("[data-fade]");
-          gsap.set(photo, { clipPath: "inset(6% 0% 6% 100%)" });
-          gsap.set(zoom, { scale: 1.08 });
-          gsap.set(lines, { yPercent: 110 });
-          gsap.set(fades, { opacity: 0, y: 14 });
-          el.dataset.ready = "true";
-          const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-          tl.to(photo, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.15, ease: "power4.inOut" }, 0)
-            .to(zoom, { scale: 1, duration: 1.6 }, 0)
-            .to(el.querySelector("[data-label]"), { opacity: 1, y: 0, duration: 0.6 }, 0.25)
-            .to(lines, { yPercent: 0, duration: 0.9, stagger: 0.12 }, 0.35)
-            .to(Array.from(fades).filter((n) => !(n as HTMLElement).hasAttribute("data-label")), { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 }, 0.8);
 
-          const trigger = gsap.timeline({
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          const photo = one("[data-photo]");
+          const zoom = one("[data-zoom]");
+          const lines = el.querySelectorAll("[data-line]");
+          const rest = el.querySelectorAll("[data-fade]");
+          const ui = el.querySelectorAll("[data-ui]");
+          gsap.set(photo, { opacity: 0 });
+          gsap.set(zoom, { scale: 1.06 });
+          gsap.set(lines, { yPercent: 110 });
+          gsap.set([one("[data-label]"), ...Array.from(rest), ...Array.from(ui)], { opacity: 0, y: 14 });
+          el.dataset.ready = "true";
+          gsap
+            .timeline({ defaults: { ease: "power2.out" } })
+            .to(photo, { opacity: 1, duration: 0.8 }, 0)
+            .to(zoom, { scale: 1, duration: 1.3 }, 0)
+            .to(one("[data-label]"), { opacity: 1, y: 0, duration: 0.5 }, 0.25)
+            .to(lines, { yPercent: 0, duration: 0.75, stagger: 0.12 }, 0.4)
+            .to(rest, { opacity: 1, y: 0, duration: 0.55 }, 0.8)
+            .to(ui, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, 1.0);
+        });
+
+        // Scroll: the hero shrinks into a rounded frame, its photo drifts slightly.
+        mm.add("(prefers-reduced-motion: no-preference) and (min-width: 901px)", () => {
+          const frame = one("[data-frame]");
+          const par = one("[data-par]");
+          const copy = one("[data-copy]");
+          const tl = gsap.timeline({
             scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.6 },
           });
-          trigger
-            .to(photo, { scale: 0.9, borderRadius: 28, transformOrigin: "100% 50%", ease: "none" }, 0)
-            .to(copy, { y: -48, opacity: 0.15, ease: "none" }, 0);
+          tl.to(frame, { scale: 0.9, borderRadius: 28, transformOrigin: "50% 0%", ease: "none" }, 0)
+            .to(par, { yPercent: 6, ease: "none" }, 0)
+            .to(copy, { opacity: 0.1, y: -30, ease: "none" }, 0);
+        });
+        mm.add("(prefers-reduced-motion: no-preference) and (max-width: 900px)", () => {
+          gsap.to(one("[data-par]"), {
+            yPercent: 4,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.6 },
+          });
+        });
 
-          let move: ((e: PointerEvent) => void) | null = null;
-          if (window.matchMedia("(hover: hover) and (pointer: fine)").matches && zoom) {
-            const qx = gsap.quickTo(zoom, "x", { duration: 0.9, ease: "power3.out" });
-            const qy = gsap.quickTo(zoom, "y", { duration: 0.9, ease: "power3.out" });
-            move = (e: PointerEvent) => {
-              const r = el.getBoundingClientRect();
-              qx(((e.clientX - r.left) / r.width - 0.5) * -14);
-              qy(((e.clientY - r.top) / r.height - 0.5) * -10);
-            };
-            el.addEventListener("pointermove", move, { passive: true });
-          }
-          return () => {
-            if (move) el.removeEventListener("pointermove", move);
+        // Subtle pointer parallax (fine pointers only).
+        mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
+          const zoom = one("[data-zoom]");
+          if (!zoom) return;
+          const qx = gsap.quickTo(zoom, "x", { duration: 0.9, ease: "power3.out" });
+          const qy = gsap.quickTo(zoom, "y", { duration: 0.9, ease: "power3.out" });
+          const move = (e: PointerEvent) => {
+            const r = el.getBoundingClientRect();
+            qx(((e.clientX - r.left) / r.width - 0.5) * -14);
+            qy(((e.clientY - r.top) / r.height - 0.5) * -10);
           };
+          el.addEventListener("pointermove", move, { passive: true });
+          return () => el.removeEventListener("pointermove", move);
         });
         cleanup = () => mm.revert();
-        if (el.dataset.ready !== "true") el.dataset.ready = "true";
+        el.dataset.ready = "true";
       },
     );
     return () => {
@@ -161,10 +172,6 @@ export function JournalHero({
     if (e.key === "ArrowLeft") go(activeRef.current - 1);
   };
 
-  const current = slides[active];
-  const lineTop = heading ? heading.title : "英語と、";
-  const lineBottom = heading ? null : "学びの話。";
-
   return (
     <section
       ref={root}
@@ -174,142 +181,133 @@ export function JournalHero({
       aria-label="ENPATH JOURNAL 特集"
       onKeyDown={onKeyDown}
     >
-      <div className={s.photo} data-photo>
-        <div className={s.zoom} data-zoom>
-          {images.map((src, i) => (
-            <div
-              key={src + i}
-              className={s.slide}
-              data-slide
-              style={i === 0 ? undefined : { opacity: 0 }}
-              onPointerDown={(e) => {
-                if (many && e.pointerType !== "mouse") swipe.current = e.clientX;
-              }}
-              onPointerUp={(e) => {
-                if (swipe.current == null) return;
-                const dx = e.clientX - swipe.current;
-                swipe.current = null;
-                if (Math.abs(dx) > 48) go(activeRef.current + (dx < 0 ? 1 : -1));
-              }}
-            >
-              <Image
-                src={src}
-                alt=""
-                fill
-                priority={i === 0}
-                sizes="(max-width: 900px) 100vw, 72vw"
-                className={s.img}
-              />
-            </div>
-          ))}
-        </div>
-        <div className={s.shade} aria-hidden="true" />
-      </div>
-
-      <div className={s.inner}>
-        <div className={s.copy} data-copy>
-          <p className={s.label} data-label data-fade>
-            {heading ? heading.label : "READ. THINK. FIND YOUR PATH."}
-          </p>
-          <h1 className={s.title}>
-            <span className={s.mask}>
-              <span data-line>{lineTop}</span>
-            </span>
-            {lineBottom && (
-              <span className={s.mask}>
-                <span data-line>{lineBottom}</span>
-              </span>
-            )}
-          </h1>
-          <p className={s.sub} data-fade>
-            {heading ? (
-              heading.description
-            ) : (
-              <>
-                知ることで、学びの世界はもっと広がる。
-                <br />
-                英語を学ぶ理由から、毎日の学習のヒントまで。
-              </>
-            )}
-          </p>
-        </div>
-
-        {!compact && (
-          <div className={s.featured} data-fade>
-            {many && (
-              <div className={s.arrows}>
-                <button type="button" onClick={() => go(activeRef.current - 1)} aria-label="前の特集記事">
-                  <ArrowLeft size={18} aria-hidden="true" />
-                </button>
-                <button type="button" onClick={() => go(activeRef.current + 1)} aria-label="次の特集記事">
-                  <ArrowRight size={18} aria-hidden="true" />
-                </button>
-              </div>
-            )}
-            <div className={s.stories} aria-live="polite">
-              {slides.length ? (
-                slides.map((x, i) => (
-                  <div
-                    key={x.slug}
-                    className={s.story}
-                    data-story
-                    style={i === 0 ? undefined : { visibility: "hidden" }}
-                    aria-hidden={i !== active}
-                  >
-                    <p className={s.storyLabel} data-in>
-                      FEATURED STORY / {pad(i + 1)}
-                      <span>{x.categoryLabel}</span>
-                    </p>
-                    <h2 data-in>{x.title}</h2>
-                    <p className={s.storyText} data-in>{x.description}</p>
-                    <Link
-                      href={x.href}
-                      className={s.read}
-                      tabIndex={i === active ? 0 : -1}
-                      data-in
-                      onClick={() => {
-                        if (!preview)
-                          track("journal_category_select", {
-                            slug: x.slug,
-                            category: x.category,
-                            title: x.title,
-                          });
-                      }}
-                    >
-                      この記事を読む <ArrowRight size={16} aria-hidden="true" />
-                    </Link>
-                  </div>
-                ))
-              ) : (
-                <div className={s.story}>
-                  <p className={s.storyLabel}>FEATURED STORY</p>
-                  <h2>最初の読みものを、準備しています。</h2>
-                  <p className={s.storyText}>
-                    英語との向き合い方や、日々の学びのヒントを、この場所からお届けしていきます。
-                  </p>
+      <div
+        className={s.frame}
+        data-frame
+        onPointerDown={(e) => {
+          const onControl = (e.target as Element).closest("a, button");
+          if (many && e.pointerType !== "mouse" && !onControl) swipe.current = e.clientX;
+        }}
+        onPointerUp={(e) => {
+          if (swipe.current == null) return;
+          const dx = e.clientX - swipe.current;
+          swipe.current = null;
+          if (Math.abs(dx) > 48) go(activeRef.current + (dx < 0 ? 1 : -1));
+        }}
+        onPointerCancel={() => (swipe.current = null)}
+      >
+        <div className={s.photo} data-photo>
+          <div className={s.par} data-par>
+            <div className={s.zoom} data-zoom>
+              {images.map((src, i) => (
+                <div
+                  key={src + i}
+                  className={s.slide}
+                  data-slide
+                  style={i === 0 ? undefined : { opacity: 0 }}
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    priority={i === 0}
+                    sizes="100vw"
+                    quality={78}
+                    className={s.img}
+                  />
                 </div>
-              )}
+              ))}
             </div>
           </div>
-        )}
-        {many && (
-          <ol className={s.dots} aria-label="特集記事の選択">
-            {slides.map((x, i) => (
-              <li key={x.slug}>
-                <button
-                  type="button"
-                  aria-label={`${pad(i + 1)}：${x.title}`}
-                  aria-current={i === active ? "true" : undefined}
-                  onClick={() => go(i)}
-                >
-                  {pad(i + 1)}
-                </button>
-              </li>
-            ))}
-          </ol>
-        )}
+          <div className={s.shade} aria-hidden="true" />
+          {!compact && (
+            <div className={s.decos} aria-hidden="true">
+              <Image
+                data-deco
+                className={s.curve}
+                src={heroImages.curve}
+                alt=""
+                width={1600}
+                height={478}
+                sizes="40vw"
+              />
+              <Image
+                data-deco
+                className={s.hand}
+                src={heroImages.handwriting}
+                alt=""
+                width={1400}
+                height={816}
+                sizes="30vw"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className={s.inner}>
+          <div className={s.copy} data-copy>
+            <p className={s.label} data-label>
+              {heading ? heading.label : "READ. THINK. FIND YOUR PATH."}
+            </p>
+            <h1 className={s.title}>
+              <span className={s.mask}>
+                <span data-line>{heading ? heading.title : "英語と、"}</span>
+              </span>
+              {!heading && (
+                <span className={s.mask}>
+                  <span data-line>学びの話。</span>
+                </span>
+              )}
+            </h1>
+            <p className={s.sub} data-fade>
+              {heading ? (
+                heading.description
+              ) : (
+                <>
+                  知ることで、学びの世界はもっと広がる。
+                  <br />
+                  英語を学ぶ理由から、毎日の学習のヒントまで。
+                </>
+              )}
+            </p>
+          </div>
+
+          {!compact && (
+            <div className={s.bottom}>
+              <div className={s.featured} data-fade>
+                {many && (
+                  <div className={s.arrows} data-ui>
+                    <button type="button" onClick={() => go(activeRef.current - 1)} aria-label="前の特集">
+                      <ArrowLeft size={18} aria-hidden="true" />
+                    </button>
+                    <button type="button" onClick={() => go(activeRef.current + 1)} aria-label="次の特集">
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+                <FeaturedStory slides={slides} active={active} preview={preview} />
+              </div>
+              {many && (
+                <ol className={s.dots} aria-label="特集の選択" data-ui>
+                  {Array.from({ length: count }, (_, i) => (
+                    <li key={i}>
+                      <button
+                        type="button"
+                        aria-label={`特集 ${pad(i + 1)}${slides[i] ? `：${slides[i].title}` : ""}`}
+                        aria-current={i === active ? "true" : undefined}
+                        onClick={() => go(i)}
+                      >
+                        {pad(i + 1)}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      {current && <span className="sr-only">{`${active + 1} / ${slides.length}`}</span>}
+      <span className="sr-only">{many ? `${active + 1} / ${count}` : ""}</span>
     </section>
   );
 }

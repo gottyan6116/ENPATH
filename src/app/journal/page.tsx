@@ -1,27 +1,25 @@
 import type { Metadata } from "next";
+import "@fontsource-variable/noto-serif-jp";
 import {
   journalCategories,
   journalDescription,
   categoryLabel,
 } from "@/content/journal";
+import { heroImages } from "@/content/journalHero";
 import {
   getVisibleArticles,
   isJournalPreview,
   articleHref,
   type JournalQuery,
 } from "@/lib/journal";
-import {
-  JournalShell,
-  JournalCTA,
-  ArticleCard,
-} from "@/components/journal/Journal";
-import { JournalLink } from "@/components/journal/JournalTracking";
+import { JournalShell, JournalCTA } from "@/components/journal/Journal";
 import {
   JournalHero,
   type HeroSlide,
 } from "@/components/journal/JournalHero";
-import { JournalReveal } from "@/components/journal/JournalReveal";
-import { readyForIndexing } from "@/lib/config";
+import { JournalCategoryNav } from "@/components/journal/JournalCategoryNav";
+import { JournalArticleGrid } from "@/components/journal/JournalArticleGrid";
+import { readyForIndexing, siteUrl } from "@/lib/config";
 import s from "@/components/journal/journal.module.css";
 type Props = { searchParams: Promise<JournalQuery> };
 export async function generateMetadata({
@@ -45,10 +43,10 @@ export async function generateMetadata({
       url: "/journal",
       images: [
         {
-          url: "/media/planning.webp",
+          url: heroImages.main,
           width: 1672,
           height: 941,
-          alt: "学習計画を考えるイメージ",
+          alt: "窓辺の机に開かれた英語のノートとコーヒー",
         },
       ],
     },
@@ -56,19 +54,20 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: "ENPATH JOURNAL｜英語と、学びの話。",
       description: journalDescription,
-      images: ["/media/planning.webp"],
+      images: [heroImages.main],
     },
   };
 }
 export default async function JournalPage({ searchParams }: Props) {
   const query = await searchParams;
+  const base = siteUrl;
   const preview = isJournalPreview(query);
   const articles = await getVisibleArticles(preview);
   const selected = journalCategories.find((item) => item.id === query.category);
   const filtered = selected
     ? articles.filter((article) => article.category === selected.id)
     : articles;
-  // Hero stories: published featured articles first, then the newest ones.
+  // Hero stories: featured articles first, then the newest ones. No articles -> design fallback.
   const heroArticles = [
     ...filtered.filter((article) => article.featured),
     ...filtered.filter((article) => !article.featured),
@@ -82,14 +81,10 @@ export default async function JournalPage({ searchParams }: Props) {
     description: article.description,
     coverImage: article.coverImage,
   }));
-  const latest = filtered.filter(
-    (article) => !heroArticles.some((item) => item.slug === article.slug),
-  );
   return (
     <JournalShell preview={preview}>
       <JournalHero
         slides={slides}
-        fallbackImage="/media/planning.webp"
         compact={Boolean(selected)}
         preview={preview}
         heading={
@@ -103,61 +98,26 @@ export default async function JournalPage({ searchParams }: Props) {
         }
       />
       <div className={s.wrap}>
-        <nav aria-label="記事カテゴリ" className={s.filters}>
-          {[
-            { id: "all", label: "すべて", description: "すべての読みもの" },
-            ...journalCategories,
-          ].map((category) => (
-            <JournalLink
-              key={category.id}
-              href={`/journal${category.id !== "all" ? `?category=${category.id}${preview ? "&preview=1" : ""}` : preview ? "?preview=1" : ""}`}
-              event="journal_category_select"
-              fields={{
-                slug: "journal",
-                category: category.id,
-                title: category.label,
-              }}
-              preview={preview}
-              current={
-                selected ? category.id === selected.id : category.id === "all"
-              }
-            >
-              {category.label}
-            </JournalLink>
-          ))}
-        </nav>
+        <JournalCategoryNav selectedId={selected?.id} preview={preview} />
         <section className={s.latest} aria-labelledby="latest-heading">
           <div className={s.sectionTitle}>
-            <h2 id="latest-heading">
-              {selected ? selected.label : "新着の読みもの"}
-            </h2>
-            <span>{String(filtered.length).padStart(2, "0")} STORIES</span>
-          </div>
-          {latest.length > 0 ? (
-            <JournalReveal className={s.grid}>
-              {latest.map((article) => (
-                <ArticleCard
-                  key={article.slug}
-                  article={article}
-                  preview={preview}
-                />
-              ))}
-            </JournalReveal>
-          ) : (
-            <div className={s.empty}>
-              <p className={s.eyebrow}>COMING SOON</p>
-              <h3>
-                {heroArticles.length > 0
-                  ? "次の読みものを、準備しています。"
-                  : "読みものは、ただいま準備しています。"}
-              </h3>
+            <div>
+              <h2 id="latest-heading">
+                {selected ? selected.label : "注目の記事"}
+              </h2>
               <p>
-                英語との向き合い方や、日々の学びのヒントを
-                <br />
-                この場所からお届けしていきます。
+                {selected
+                  ? selected.description
+                  : "いま読んでほしい、ピックアップ記事です。"}
               </p>
             </div>
-          )}
+            <span>{String(filtered.length).padStart(2, "0")} STORIES</span>
+          </div>
+          <JournalArticleGrid
+            articles={filtered}
+            preview={preview}
+            hasFeatured={heroArticles.length > 0}
+          />
         </section>
         <section className={s.about}>
           <p className={s.eyebrow}>ABOUT THIS JOURNAL</p>
@@ -174,6 +134,29 @@ export default async function JournalPage({ searchParams }: Props) {
         </section>
       </div>
       <JournalCTA preview={preview} />
+      {base && !preview && filtered.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: "ENPATH JOURNAL",
+              description: journalDescription,
+              url: new URL("/journal", base).href,
+              mainEntity: {
+                "@type": "ItemList",
+                itemListElement: filtered.map((article, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  url: new URL(articleHref(article.slug, false), base).href,
+                  name: article.title,
+                })),
+              },
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
     </JournalShell>
   );
 }
