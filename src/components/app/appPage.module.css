@@ -1,0 +1,167 @@
+.page {
+  --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --pink: #fc245c;
+  background: #faf7f1;
+  color: var(--navy);
+}
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+.eyebrow {
+  font: 600 11px/1.5 var(--font-en);
+  letter-spacing: 0.22em;
+  color: var(--teal-dark);
+}
+.features,
+.pricing,
+.final {
+  padding: 104px 0;
+}
+.features h2,
+.pricing h2,
+.final h2 {
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.8vw, 38px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+  margin-top: 14px;
+}
+.intro {
+  margin-top: 14px;
+  color: #4b5b66;
+  line-height: 2;
+}
+.list {
+  margin-top: 64px;
+  display: grid;
+  gap: 72px;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+.reverse .visual {
+  order: 2;
+}
+.visual {
+  display: grid;
+  place-items: center;
+  padding: 40px 32px;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #fff 0%, #f1ede2 100%);
+}
+.visual img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 340px;
+  filter: drop-shadow(0 22px 28px rgba(15, 45, 74, 0.14));
+}
+.no {
+  font: 300 40px/1 var(--font-en);
+  color: var(--pink);
+}
+.body h3 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 500;
+  margin: 12px 0 6px;
+  letter-spacing: 0.04em;
+}
+.lead {
+  font-weight: 600;
+  color: var(--teal-dark);
+  margin-bottom: 8px;
+}
+.body p:last-child {
+  color: #4b5b66;
+  line-height: 2;
+  font-size: 15px;
+}
+.pricing {
+  background: #eef6f3;
+  text-align: center;
+}
+.price {
+  margin: 22px auto 0;
+  max-width: 720px;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 2;
+  font-weight: 600;
+}
+.note {
+  margin: 14px auto 0;
+  max-width: 720px;
+  font-size: 13px;
+  line-height: 1.95;
+  color: #5b6b76;
+}
+.final {
+  text-align: center;
+}
+.final p {
+  margin: 18px auto 0;
+  max-width: 560px;
+  color: #4b5b66;
+  line-height: 2;
+}
+.finalCta {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+.finalCta :global(.button) {
+  background: var(--pink);
+}
+.finalCta :global(.button):hover {
+  background: #d81a4b;
+}
+@media (max-width: 999px) {
+  .wrap {
+    padding: 0 32px;
+  }
+  .features,
+  .pricing,
+  .final {
+    padding: 80px 0;
+  }
+  .row {
+    gap: 36px;
+  }
+}
+@media (max-width: 767px) {
+  .wrap {
+    padding: 0 22px;
+  }
+  .features,
+  .pricing,
+  .final {
+    padding: 64px 0;
+  }
+  .list {
+    margin-top: 40px;
+    gap: 48px;
+  }
+  .row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .reverse .visual {
+    order: 0;
+  }
+  .visual {
+    padding: 28px 20px;
+  }
+  .visual img {
+    max-height: 260px;
+  }
+  .finalCta :global(.button) {
+    width: 100%;
+  }
+}

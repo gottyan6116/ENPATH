@@ -18,6 +18,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           changeFrequency: "monthly" as const,
           priority: 0.6,
         })),
+        {
+          url: new URL("/app", baseUrl).href,
+          changeFrequency: "monthly" as const,
+          priority: 0.7,
+        },
         ...featureLinks.map((item) => ({
           url: new URL(item.href, baseUrl).href,
           changeFrequency: "monthly" as const,

@@ -1,0 +1,331 @@
+.hero {
+  --pink: #fc245c;
+  --pink-dark: #d81a4b;
+  --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #faf7f1;
+  height: min(max(560px, 46vw), calc(100svh - 92px));
+  min-height: 560px;
+  color: var(--navy);
+}
+.bgWrap {
+  position: absolute;
+  inset: -4% 0;
+  z-index: 0;
+}
+.bg {
+  position: absolute;
+  inset: 0;
+}
+.bgImg {
+  object-fit: cover;
+  object-position: 55% 60%;
+}
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(251, 248, 241, 0.74) 0%,
+    rgba(251, 248, 241, 0.46) 28%,
+    rgba(251, 248, 241, 0) 52%
+  );
+}
+
+/* ---- copy ---- */
+.copy {
+  position: absolute;
+  z-index: 6;
+  left: 5.5vw;
+  top: 0;
+  bottom: 0;
+  width: 33vw;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 2.5vw;
+}
+.label {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: #e1f2ec;
+  color: var(--teal-dark);
+  font: 500 clamp(11px, 0.8vw, 13px) / 1.4 var(--font-en);
+  letter-spacing: 0.04em;
+}
+.label i {
+  font-style: normal;
+  opacity: 0.6;
+}
+.label span:last-child {
+  font-family: var(--font-sans);
+  letter-spacing: 0.06em;
+}
+.title {
+  margin: clamp(18px, 2.2vw, 34px) 0 clamp(16px, 1.8vw, 26px);
+  font-family: var(--serif);
+  font-size: clamp(46px, 3.55vw, 74px);
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: 0.02em;
+  color: var(--navy);
+}
+.mask {
+  display: block;
+  overflow: hidden;
+  padding: 0.04em 0;
+  white-space: nowrap;
+}
+.mask > span {
+  display: inline-block;
+}
+.sub {
+  font-family: var(--serif);
+  font-size: clamp(14px, 1.05vw, 18px);
+  line-height: 1.95;
+  letter-spacing: 0.04em;
+  color: #3b4a56;
+}
+.ctas {
+  margin-top: clamp(22px, 2.6vw, 40px);
+  display: grid;
+  gap: 14px;
+  width: min(100%, 26vw);
+  min-width: 300px;
+}
+.primary :global(.button) {
+  width: 100%;
+  min-height: 60px;
+  background: var(--pink);
+  box-shadow: 0 14px 28px -14px rgba(252, 36, 92, 0.7);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.primary :global(.button):hover {
+  background: var(--pink-dark);
+}
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 56px;
+  border: 1px solid #c9d0d4;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+.secondary:hover {
+  background: #fff;
+  border-color: var(--navy);
+  transform: translateY(-2px);
+}
+.secondary svg {
+  transition: transform 0.25s;
+}
+.secondary:hover svg {
+  transform: translateY(3px);
+}
+
+/* ---- stage: laptop + cards (desktop: % of the hero box) ---- */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+.curves {
+  position: absolute;
+  z-index: 1;
+  left: 34%;
+  top: 2%;
+  width: 62%;
+  pointer-events: none;
+}
+.curves img,
+.laptop img,
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.laptop {
+  position: absolute;
+  z-index: 2;
+  left: 37.5%;
+  width: 55%;
+  bottom: -4%;
+}
+.card {
+  position: absolute;
+}
+.card img {
+  filter: drop-shadow(0 22px 28px rgba(15, 45, 74, 0.14));
+}
+.words {
+  z-index: 5;
+  left: 38.2%;
+  top: 4%;
+  width: 15.2%;
+  rotate: -2deg;
+}
+.articles {
+  z-index: 4;
+  left: 62.5%;
+  top: 0%;
+  width: 22.5%;
+  rotate: 1.5deg;
+}
+.expressions {
+  z-index: 5;
+  left: 82.5%;
+  top: 37%;
+  width: 17%;
+  rotate: 2deg;
+}
+.record {
+  z-index: 5;
+  left: 35%;
+  top: 55%;
+  width: 14.5%;
+  rotate: -2deg;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero[data-ready="false"] [data-line],
+  .hero[data-ready="false"] [data-cfade],
+  .hero[data-ready="false"] [data-cta],
+  .hero[data-ready="false"] [data-enter],
+  .hero[data-ready="false"] [data-laptop-enter],
+  .hero[data-ready="false"] [data-curves],
+  .hero[data-ready="false"] [data-bg] {
+    opacity: 0;
+  }
+}
+
+/* ---- tablet & phone: stacked (copy above, stage below) ---- */
+@media (max-width: 999px) {
+  .hero {
+    height: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .veil {
+    background: linear-gradient(180deg, rgba(251, 248, 241, 0.8) 0%, rgba(251, 248, 241, 0.45) 42%, rgba(251, 248, 241, 0) 70%);
+  }
+  .copy {
+    position: relative;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    width: auto;
+    min-width: 0;
+    padding: 48px 6vw 12px;
+  }
+  .title {
+    font-size: clamp(40px, 8.4vw, 64px);
+  }
+  .sub {
+    font-size: clamp(14px, 2.2vw, 17px);
+  }
+  .ctas {
+    width: min(100%, 420px);
+    min-width: 0;
+  }
+  .stage {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    aspect-ratio: 1672 / 820;
+    margin-top: 28px;
+  }
+  .curves {
+    left: 8%;
+    width: 84%;
+  }
+  .laptop {
+    left: 14%;
+    width: 72%;
+    bottom: -3%;
+  }
+  .words {
+    left: 6%;
+    top: 4%;
+    width: 17%;
+  }
+  .articles {
+    left: 58%;
+    top: 0%;
+    width: 25%;
+  }
+  .expressions {
+    left: 81%;
+    top: 36%;
+    width: 18%;
+  }
+  .record {
+    left: 4%;
+    top: 52%;
+    width: 16%;
+  }
+}
+@media (max-width: 767px) {
+  .copy {
+    padding: 36px 22px 8px;
+  }
+  .title {
+    font-size: clamp(30px, 9.3vw, 46px);
+    letter-spacing: 0;
+  }
+  .stage {
+    aspect-ratio: 1 / 0.82;
+    margin-top: 12px;
+  }
+  .curves {
+    left: -8%;
+    width: 116%;
+    top: 4%;
+  }
+  .laptop {
+    left: 2%;
+    width: 98%;
+    bottom: -2%;
+  }
+  .words {
+    left: 2%;
+    top: 0;
+    width: 30%;
+  }
+  .articles {
+    left: 52%;
+    top: 4%;
+    width: 46%;
+  }
+  .expressions,
+  .record {
+    display: none;
+  }
+  .ctas {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secondary,
+  .secondary svg {
+    transition: none;
+  }
+}

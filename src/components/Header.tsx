@@ -10,6 +10,7 @@ const links = [
   ["コーチ", "/#coach"],
   ["料金", "/#pricing"],
   ["よくある質問", "/#faq"],
+  ["アプリ", "/app"],
   ["ENPATH JOURNAL", "/journal"],
 ];
 export function Header() {
@@ -139,7 +140,8 @@ export function Header() {
               href={href}
               onClick={closeAll}
               aria-current={
-                href === "/journal" && pathname.startsWith("/journal")
+                (href === "/journal" && pathname.startsWith("/journal")) ||
+                (href === "/app" && pathname.startsWith("/app"))
                   ? "page"
                   : undefined
               }
@@ -202,7 +204,8 @@ export function Header() {
             href={href}
             onClick={closeAll}
             aria-current={
-              href === "/journal" && pathname.startsWith("/journal")
+              (href === "/journal" && pathname.startsWith("/journal")) ||
+              (href === "/app" && pathname.startsWith("/app"))
                 ? "page"
                 : undefined
             }
