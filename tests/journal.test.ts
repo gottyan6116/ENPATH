@@ -20,19 +20,16 @@ test("下書きは公開一覧に含まれず、プレビューでのみ全件�
   );
   assert.equal(visibleArticles(articles, true).length, articles.length);
 });
-test("デザイン確認用の2記事は下書きで、日付・執筆者を持たない", async () => {
-  const samples = (await getArticles()).filter((article) =>
-    ["why-enpath-story", "ai-era-learning"].includes(article.slug),
+test("未公開のカード用記事は下書きで、日付・執筆者を持たない", async () => {
+  const draft = (await getArticles()).find(
+    (article) => article.slug === "why-enpath-story",
   );
-  assert.equal(samples.length, 2);
+  assert.ok(draft);
   assert.ok(
-    samples.every(
-      (article) =>
-        article.status === "draft" &&
-        article.publishedAt === null &&
-        article.author === null &&
-        article.imageAlt,
-    ),
+    draft.status === "draft" &&
+      draft.publishedAt === null &&
+      draft.author === null &&
+      draft.imageAlt,
   );
 });
 test("第1記事は公開済みで、公開日・画像説明・SEO題名を持つ", async () => {
@@ -127,6 +124,7 @@ test("公開記事のみを日付順で並べ、下書きを除外する", () =>
 });
 
 import { extractToc, headingId } from "../src/lib/journalToc";
+import { previewCards } from "../src/content/journalCards";
 test("目次はH2・H3だけを順番に抽出し、コードブロック内の見出しを無視する", () => {
   const body = [
     "## はじめに",
@@ -146,4 +144,30 @@ test("目次はH2・H3だけを順番に抽出し、コードブロック内の�
     ],
   );
   assert.equal(headingId("引用・補足 注意"), "引用補足-注意");
+});
+
+test("第2記事は公開済みで、カードと同じ単一の画像・注釈2件・本文内CTAを持つ", async () => {
+  const article = (await getArticles()).find(
+    (item) => item.slug === "english-learning-in-ai-era",
+  );
+  assert.ok(article);
+  assert.equal(article.status, "published");
+  assert.equal(article.category, "perspectives");
+  assert.ok(article.imageAlt && article.seoTitle && article.publishedAt);
+  assert.equal(article.body.match(/<Ref n="/g)?.length, 2);
+  assert.equal(article.body.match(/<Reference /g)?.length, 2);
+  assert.ok(article.body.includes("<Cta "));
+  const card = previewCards.find((item) => item.id === article.slug);
+  assert.ok(card, "記事に対応するカードがある");
+  assert.equal(card.category, article.category);
+  assert.equal(card.image, article.coverImage);
+});
+test("公開記事とカードのslugは重複せず、画像も重複しない", async () => {
+  const published = visibleArticles(await getArticles());
+  assert.equal(new Set(published.map((a) => a.slug)).size, published.length);
+  assert.equal(
+    new Set(published.map((a) => a.coverImage)).size,
+    published.length,
+  );
+  assert.equal(new Set(previewCards.map((c) => c.id)).size, previewCards.length);
 });

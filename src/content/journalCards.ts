@@ -4,7 +4,8 @@ import type { JournalCategory } from "./journal";
  * Pre-publication preview cards for the JOURNAL list.
  * These are NOT published articles: no body, date, summary or detail URL exists yet, so the cards
  * are not linked and are never added to the sitemap or structured data.
- * A card becomes a link automatically once an MDX article with the same slug (= card id) is published.
+ * A card becomes a link automatically once an MDX article with the same slug (= card id) is published;
+ * from then on the card image comes from that article's frontmatter `image` (single source of truth).
  */
 export type JournalCardItem = {
   /** Same as the MDX slug of the article this card will link to. */
@@ -33,10 +34,10 @@ export const previewCards: JournalCardItem[] = [
     image: "/images/journal/articles/why-enpath-story.webp",
   },
   {
-    id: "ai-era-learning",
+    id: "english-learning-in-ai-era",
     title: "AI時代の英語学習",
     category: "perspectives",
     categoryLabel: "英語と、これから",
-    image: "/images/journal/articles/ai-era-learning.webp",
+    image: "/images/journal/articles/english-learning-in-ai-era.webp",
   },
 ];

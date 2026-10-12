@@ -106,25 +106,29 @@ export function Reference({
   publisher,
   date,
   href,
+  children,
 }: {
   n: string;
   title: string;
   publisher: string;
   date?: string;
   href: string;
+  /** Optional remark on how the source is used in the article (e.g. its limits). */
+  children?: ReactNode;
 }) {
   return (
     <li id={`ref-${n}`} value={Number(n)}>
-      <span className={s.refBody}>
+      <div className={s.refBody}>
         {publisher}「{title}」{date ? `（${date}）` : ""}
         <br />
         <a href={href} target="_blank" rel="noopener noreferrer">
           {href}
         </a>
-      </span>
-      <a className={s.refBack} href={`#refmark-${n}`} aria-label={`本文の注釈${n}へ戻る`}>
-        ↩
-      </a>
+        <a className={s.refBack} href={`#refmark-${n}`} aria-label={`本文の注釈${n}へ戻る`}>
+          ↩
+        </a>
+        {children && <div className={s.refNote}>{children}</div>}
+      </div>
     </li>
   );
 }

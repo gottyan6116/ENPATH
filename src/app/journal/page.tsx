@@ -71,7 +71,7 @@ export default async function JournalPage({ searchParams }: Props) {
   const selected = journalCategories.find((item) => item.id === query.category);
   // Cards: each planned card links to its article only once that article is published; the rest stay
   // unlinked (never a dead link, never in sitemap/JSON-LD). Dev preview lists every MDX file instead.
-  const published = new Set(articles.map((article) => article.slug));
+  const published = new Map(articles.map((article) => [article.slug, article]));
   const showSamples = !preview && previewCards.some((card) => !published.has(card.id));
   // The hero is independent of the selected category: featured articles first, then the newest.
   // No articles -> design fallback.
@@ -106,7 +106,16 @@ export default async function JournalPage({ searchParams }: Props) {
                     category: card.category,
                     node: (
                       <JournalCard
-                        item={published.has(card.id) ? { ...card, slug: card.id } : card}
+                        item={
+                          published.has(card.id)
+                            ? {
+                                ...card,
+                                slug: card.id,
+                                // The published article is the single source for the image.
+                                image: published.get(card.id)!.coverImage,
+                              }
+                            : card
+                        }
                       />
                     ),
                   })),

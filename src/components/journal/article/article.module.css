@@ -760,3 +760,13 @@
 .prose .endCtaBody p:nth-last-child(2) {
   margin-top: 1.2em;
 }
+
+.refNote {
+  margin-top: 4px;
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: var(--soft);
+}
+.prose .refNote p {
+  margin: 0;
+}
