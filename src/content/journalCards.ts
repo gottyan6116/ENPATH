@@ -4,9 +4,10 @@ import type { JournalCategory } from "./journal";
  * Pre-publication preview cards for the JOURNAL list.
  * These are NOT published articles: no body, date, summary or detail URL exists yet, so the cards
  * are not linked and are never added to the sitemap or structured data.
- * Shown only while there are no published articles; replace with MDX metadata when articles go live.
+ * A card becomes a link automatically once an MDX article with the same slug (= card id) is published.
  */
 export type JournalCardItem = {
+  /** Same as the MDX slug of the article this card will link to. */
   id: string;
   title: string;
   category: JournalCategory;
@@ -18,7 +19,7 @@ export type JournalCardItem = {
 
 export const previewCards: JournalCardItem[] = [
   {
-    id: "jp-english-education",
+    id: "japanese-english-education",
     title: "日本の英語教育は実は素晴らしい",
     category: "learning",
     categoryLabel: "英語学習のヒント",

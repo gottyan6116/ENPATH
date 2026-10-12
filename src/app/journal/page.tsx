@@ -69,8 +69,10 @@ export default async function JournalPage({ searchParams }: Props) {
   const preview = isJournalPreview(query);
   const articles = await getVisibleArticles(preview);
   const selected = journalCategories.find((item) => item.id === query.category);
-  // With no published articles, show the pre-publication sample cards (unlinked, not in sitemap/JSON-LD).
-  const showSamples = articles.length === 0;
+  // Cards: each planned card links to its article only once that article is published; the rest stay
+  // unlinked (never a dead link, never in sitemap/JSON-LD). Dev preview lists every MDX file instead.
+  const published = new Set(articles.map((article) => article.slug));
+  const showSamples = !preview && previewCards.some((card) => !published.has(card.id));
   // The hero is independent of the selected category: featured articles first, then the newest.
   // No articles -> design fallback.
   const heroArticles = [
@@ -92,17 +94,30 @@ export default async function JournalPage({ searchParams }: Props) {
       <div className={s.wrap}>
         <JournalListing
           items={
-            showSamples
-              ? previewCards.map((item) => ({
-                  slug: item.id,
-                  category: item.category,
-                  node: <JournalCard item={item} />,
-                }))
-              : articles.map((article) => ({
+            preview
+              ? articles.map((article) => ({
                   slug: article.slug,
                   category: article.category,
                   node: <ArticleCard article={article} preview={preview} />,
                 }))
+              : [
+                  ...previewCards.map((card) => ({
+                    slug: card.id,
+                    category: card.category,
+                    node: (
+                      <JournalCard
+                        item={published.has(card.id) ? { ...card, slug: card.id } : card}
+                      />
+                    ),
+                  })),
+                  ...articles
+                    .filter((article) => !previewCards.some((card) => card.id === article.slug))
+                    .map((article) => ({
+                      slug: article.slug,
+                      category: article.category,
+                      node: <ArticleCard article={article} preview={preview} />,
+                    })),
+                ]
           }
           samples={showSamples}
           initialCategory={selected?.id ?? "all"}

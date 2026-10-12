@@ -27,11 +27,17 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
   const gsapRef = useRef<typeof import("gsap").gsap | null>(null);
   const swipe = useRef<number | null>(null);
 
-  // Slide 1 keeps the brand cover photo; later slides use their own cover.
-  const images = slides.length
-    ? [heroImages.main, ...slides.slice(1).map((x) => x.coverImage)]
-    : fallbackSlides.map((x) => x.image);
-  const count = slides.length || fallbackSlides.length;
+  // Real articles come first; remaining slots (up to 3) use the unlinked design placeholders,
+  // so the carousel keeps working while only a few articles are published.
+  // Slide 1 always keeps the brand cover photo; later slides use their own cover.
+  const count = Math.max(slides.length, fallbackSlides.length);
+  const images = Array.from({ length: count }, (_, i) =>
+    i === 0
+      ? heroImages.main
+      : slides[i]
+        ? slides[i].coverImage
+        : fallbackSlides[i % fallbackSlides.length].image,
+  );
   const many = count > 1 && !compact;
 
   // Auto-advance every 10s. Pauses on hover/focus, when off-screen, with reduced motion, or when the user pauses it.

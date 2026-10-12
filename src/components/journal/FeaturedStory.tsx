@@ -27,36 +27,35 @@ export function FeaturedStory({
   active: number;
   preview: boolean;
 }) {
-  if (!slides.length) {
-    return (
-      <div className={s.stories} aria-live="polite">
-        {fallbackSlides.map((f, i) => (
-          <div
-            key={f.key}
-            className={s.story}
-            data-story
-            style={i === 0 ? undefined : { visibility: "hidden" }}
-            aria-hidden={i !== active}
-          >
-            <p className={s.storyLabel} data-in>
-              {f.label}
-            </p>
-            <h2 data-in>
-              {f.lines[0]}
-              <br />
-              {f.lines[1]}
-            </h2>
-            <p className={s.soon} data-in>
-              COMING SOON — 読みものを準備しています
-            </p>
-          </div>
-        ))}
-      </div>
-    );
-  }
   return (
     <div className={s.stories} aria-live="polite">
-      {slides.map((x, i) => (
+      {Array.from({ length: Math.max(slides.length, fallbackSlides.length) }, (_, i) => {
+        const x = slides[i];
+        if (!x) {
+          const f = fallbackSlides[i % fallbackSlides.length];
+          return (
+            <div
+              key={f.key}
+              className={s.story}
+              data-story
+              style={i === 0 ? undefined : { visibility: "hidden" }}
+              aria-hidden={i !== active}
+            >
+              <p className={s.storyLabel} data-in>
+                {f.label}
+              </p>
+              <h2 data-in>
+                {f.lines[0]}
+                <br />
+                {f.lines[1]}
+              </h2>
+              <p className={s.soon} data-in>
+                COMING SOON — 読みものを準備しています
+              </p>
+            </div>
+          );
+        }
+        return (
         <div
           key={x.slug}
           className={s.story}
@@ -86,7 +85,8 @@ export function FeaturedStory({
             READ MORE <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -51,9 +51,18 @@ function useActiveId(items: TocItem[]) {
 }
 
 function List({ items, active, onPick }: { items: TocItem[]; active: string; onPick: (id: string) => void }) {
+  // Keep the list short: every H2 is shown, H3s only under the section being read.
+  const parentOf = new Map<string, string>();
+  let parent = "";
+  for (const item of items) {
+    if (item.level === 2) parent = item.id;
+    parentOf.set(item.id, parent);
+  }
+  const openParent = parentOf.get(active);
+  const visible = items.filter((item) => item.level === 2 || parentOf.get(item.id) === openParent);
   return (
     <ol className={s.tocList}>
-      {items.map((item) => (
+      {visible.map((item) => (
         <li key={item.id} data-level={item.level}>
           <a
             href={`#${item.id}`}
@@ -79,6 +88,17 @@ function List({ items, active, onPick }: { items: TocItem[]; active: string; onP
 /** `sidebar`: always-open, sticky on desktop. `inline`: collapsible, for phones/tablets. */
 export function ArticleToc({ items, variant }: { items: TocItem[]; variant: "sidebar" | "inline" }) {
   const [active, setActive] = useActiveId(items);
+  const box = useRef<HTMLElement>(null);
+  // Keep the current item visible inside the (scrollable) sidebar list without moving the page.
+  useEffect(() => {
+    const nav = box.current;
+    const link = nav?.querySelector<HTMLElement>('a[aria-current="location"]');
+    if (!nav || !link) return;
+    const top = link.offsetTop;
+    if (top < nav.scrollTop + 40) nav.scrollTop = Math.max(0, top - 40);
+    else if (top + link.offsetHeight > nav.scrollTop + nav.clientHeight - 24)
+      nav.scrollTop = top + link.offsetHeight - nav.clientHeight + 24;
+  }, [active]);
   if (items.length < 2) return null;
   if (variant === "inline")
     return (
@@ -88,7 +108,7 @@ export function ArticleToc({ items, variant }: { items: TocItem[]; variant: "sid
       </details>
     );
   return (
-    <nav className={s.tocSide} aria-label="目次">
+    <nav ref={box} className={s.tocSide} aria-label="目次">
       <p className={s.sideLabel}>目次</p>
       <List items={items} active={active} onPick={setActive} />
     </nav>

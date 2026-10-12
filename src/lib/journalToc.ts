@@ -49,3 +49,13 @@ export function textOf(node: unknown): string {
     return textOf((node as { props?: { children?: unknown } }).props?.children);
   return "";
 }
+
+/** Reading time in minutes (Japanese ~500 characters per minute); 0 when there is no body. */
+export function readingMinutes(body: string): number {
+  const text = body
+    .replace(/^```[\s\S]*?^```/gm, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/[#>*_`|\-\s]/g, "");
+  return text.length ? Math.max(1, Math.ceil(text.length / 500)) : 0;
+}

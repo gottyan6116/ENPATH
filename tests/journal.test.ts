@@ -20,13 +20,11 @@ test("下書きは公開一覧に含まれず、プレビューでのみ全件�
   );
   assert.equal(visibleArticles(articles, true).length, articles.length);
 });
-test("デザイン確認用の3記事は下書きで、日付・執筆者を持たない", async () => {
+test("デザイン確認用の2記事は下書きで、日付・執筆者を持たない", async () => {
   const samples = (await getArticles()).filter((article) =>
-    ["jp-english-education", "why-enpath-story", "ai-era-learning"].includes(
-      article.slug,
-    ),
+    ["why-enpath-story", "ai-era-learning"].includes(article.slug),
   );
-  assert.equal(samples.length, 3);
+  assert.equal(samples.length, 2);
   assert.ok(
     samples.every(
       (article) =>
@@ -36,6 +34,29 @@ test("デザイン確認用の3記事は下書きで、日付・執筆者を持�
         article.imageAlt,
     ),
   );
+});
+test("第1記事は公開済みで、公開日・画像説明・SEO題名を持つ", async () => {
+  const article = (await getArticles()).find(
+    (item) => item.slug === "japanese-english-education",
+  );
+  assert.ok(article);
+  assert.equal(article.status, "published");
+  assert.match(article.publishedAt ?? "", /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(article.imageAlt);
+  assert.ok(article.seoTitle);
+  assert.ok(article.body.includes("<Ref n="));
+  assert.ok(visibleArticles(await getArticles()).some((item) => item.slug === article.slug));
+});
+test("日付・画像の別名（date / image）を受け付ける", () => {
+  const article = parseArticle(
+    fixture("")
+      .replace("publishedAt: null", 'date: "2026-10-12"')
+      .replace("coverImage:", "image:")
+      .replace('status: "draft"', 'status: "draft"'),
+    "fixture.mdx",
+  );
+  assert.equal(article.publishedAt, "2026-10-12");
+  assert.equal(article.coverImage, "/media/planning.webp");
 });
 test("プレビュー指定で本番・テスト環境の公開制限を解除できない", () => {
   for (const environment of ["production", "test"] as const)

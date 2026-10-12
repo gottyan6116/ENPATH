@@ -12,7 +12,7 @@ import {
   visibleArticles,
   type JournalQuery,
 } from "@/lib/journal";
-import { extractToc } from "@/lib/journalToc";
+import { extractToc, readingMinutes } from "@/lib/journalToc";
 import { categoryLabel } from "@/content/journal";
 import {
   JournalShell,
@@ -97,6 +97,8 @@ export default async function ArticlePage(props: Props) {
   ].slice(0, 3);
   const source = article.body || (preview ? await getPreviewBody() : "");
   const toc = extractToc(source);
+  const hasOwnCta = /<Cta[\s>]/.test(source);
+  const minutes = readingMinutes(article.body);
   const journalHref = (query = "") =>
     `/journal${query}${preview ? `${query ? "&" : "?"}preview=1` : ""}`;
   const base = siteUrl;
@@ -106,11 +108,18 @@ export default async function ArticlePage(props: Props) {
           {
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: article.seoTitle ?? article.title,
+            headline: article.title,
             description: article.seoDescription ?? article.description,
             image: new URL(article.coverImage, base).href,
             mainEntityOfPage: new URL(articleHref(article.slug), base).href,
             datePublished: article.publishedAt,
+            inLanguage: "ja",
+            publisher: {
+              "@type": "Organization",
+              name: "ENPATH",
+              url: base,
+              logo: { "@type": "ImageObject", url: new URL("/logo.png", base).href },
+            },
             ...(article.updatedAt ? { dateModified: article.updatedAt } : {}),
             ...(article.author
               ? { author: { "@type": "Person", name: article.author } }
@@ -178,6 +187,7 @@ export default async function ArticlePage(props: Props) {
                 </span>
               )}
               {article.author && <span>執筆：{article.author}</span>}
+              {minutes > 0 && <span>読了目安 約{minutes}分</span>}
             </div>
           </header>
           <div className={s.cover}>
@@ -206,15 +216,17 @@ export default async function ArticlePage(props: Props) {
                     : "本文は未作成です。以下は表示確認用のサンプルで、この記事の本文ではありません。"}
                 </p>
               )}
-              <ArticleBody source={source} />
+              <ArticleBody source={source} fields={fields} preview={preview} />
 
-              <section className={s.endCta} aria-labelledby="end-cta-title">
-                <h2 id="end-cta-title">英語学習を、あなたに合った方法で。</h2>
-                <p>
-                  ENPATHでは、一人ひとりの目標や課題に合わせた学習プランをご提案しています。
-                </p>
-                <JournalBooking preview={preview} fields={fields} />
-              </section>
+              {!hasOwnCta && (
+                <section className={s.endCta} aria-labelledby="end-cta-title">
+                  <h2 id="end-cta-title">英語学習を、あなたに合った方法で。</h2>
+                  <p>
+                    ENPATHでは、一人ひとりの目標や課題に合わせた学習プランをご提案しています。
+                  </p>
+                  <JournalBooking preview={preview} fields={fields} />
+                </section>
+              )}
 
               <nav className={s.endNav} aria-label="記事を読んだあとに">
                 <Link href={journalHref()}>← ENPATH JOURNALへ戻る</Link>

@@ -117,6 +117,11 @@
   margin-bottom: 14px;
 }
 .tocSide {
+  position: relative;
+  max-height: calc(100svh - 340px);
+  min-height: 160px;
+  overflow-y: auto;
+  scrollbar-width: thin;
   padding: 22px 22px 20px;
   background: #fff;
   border: 1px solid var(--rule);
@@ -131,10 +136,10 @@
 }
 .tocList a {
   display: block;
-  padding: 7px 0 7px 12px;
+  padding: 5px 0 5px 12px;
   border-left: 2px solid transparent;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12.5px;
+  line-height: 1.55;
   color: #4b4741;
   transition: color 0.25s, border-color 0.25s, background 0.25s;
 }
@@ -545,4 +550,213 @@
   .relatedMini .thumb img {
     transition: none;
   }
+}
+
+/* ---- footnote markers, duration bars, FAQ, references, in-body CTA ---- */
+.refMark {
+  font: 600 11px/1 var(--font-en);
+  margin-left: 2px;
+  vertical-align: super;
+}
+.prose .refMark a {
+  text-decoration: none;
+  padding: 0 1px;
+  color: var(--teal-dark);
+}
+.prose .refMark a:hover {
+  text-decoration: underline;
+}
+.bars {
+  margin: 2em 0;
+}
+.bars .tableScroll {
+  margin: 0;
+}
+.bars table {
+  min-width: 520px;
+}
+.barCell {
+  width: 38%;
+  min-width: 160px;
+  vertical-align: middle;
+}
+.bar {
+  display: block;
+  height: 14px;
+  min-width: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+}
+.bars figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--soft);
+}
+.barsNote {
+  margin-top: 6px;
+}
+.barsNote p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--soft);
+}
+.faq {
+  margin: 1.4em 0 0;
+  border-top: 1px solid var(--rule);
+}
+.faqItem {
+  border-bottom: 1px solid var(--rule);
+}
+.faqItem summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding: 20px 4px;
+  min-height: 56px;
+  font-family: var(--serif);
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.7;
+  color: var(--navy);
+}
+.faqItem summary::-webkit-details-marker {
+  display: none;
+}
+.faqItem summary::after {
+  content: "＋";
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--teal-dark);
+  transition: transform 0.3s ease-out;
+}
+.faqItem[open] summary::after {
+  content: "－";
+}
+.faqQ {
+  font: 600 14px var(--font-en);
+  color: var(--teal-dark);
+}
+.faqItem summary:hover {
+  color: var(--teal-dark);
+}
+.faqA {
+  padding: 0 4px 24px 32px;
+  font-size: 15px;
+  line-height: 2;
+  color: #34302b;
+}
+.faqA p {
+  margin: 0;
+}
+.faqItem[open] .faqA {
+  animation: faqIn 0.35s ease-out;
+}
+@keyframes faqIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.refs {
+  list-style: decimal;
+  margin: 1.2em 0 0;
+  padding-left: 1.6em;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: #4b4741;
+}
+.refs li {
+  margin: 0 0 14px;
+  padding-left: 4px;
+  scroll-margin-top: 112px;
+}
+.refs li::marker {
+  font-family: var(--font-en);
+  color: var(--teal-dark);
+}
+.refBody a {
+  word-break: break-all;
+  font-size: 12.5px;
+}
+.refBack {
+  margin-left: 8px;
+  text-decoration: none;
+  color: var(--soft);
+}
+.prose .endCta {
+  margin: 4em 0 0;
+}
+.prose .endCta h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  text-align: center;
+}
+.endCtaBody {
+  margin: 18px auto 28px;
+  max-width: 560px;
+}
+.prose .endCtaBody p {
+  margin: 0 auto 0.9em;
+  font-size: 14.5px;
+  line-height: 2;
+  color: #4b4741;
+  max-width: none;
+}
+.barInline {
+  display: none;
+}
+@media (max-width: 767px) {
+  /* Phones: the bar moves under the figure so the chart is visible without sideways scrolling. */
+  .bars table {
+    min-width: 0;
+  }
+  .bars th {
+    white-space: normal;
+    padding-inline: 12px;
+  }
+  .bars td {
+    padding-inline: 12px;
+  }
+  .bars thead th:nth-child(3),
+  .barCell {
+    display: none;
+  }
+  .barInline {
+    display: block;
+    margin-top: 8px;
+  }
+  .faqA {
+    padding-left: 4px;
+  }
+  .endCta :global(.button) {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faqItem[open] .faqA {
+    animation: none;
+  }
+  .faqItem summary::after {
+    transition: none;
+  }
+}
+
+/* Buttons rendered inside prose must keep their own colours (prose links are teal + underlined). */
+.prose .endCta a:global(.button),
+.prose .endCta a:global(.button):hover {
+  color: #fff;
+  text-decoration: none;
+}
+.prose .endCtaBody p {
+  margin-bottom: 0.55em;
+}
+.prose .endCtaBody p:nth-last-child(2) {
+  margin-top: 1.2em;
 }

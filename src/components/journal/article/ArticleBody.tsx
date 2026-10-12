@@ -3,6 +3,7 @@ import { Children, isValidElement, type ComponentProps, type ReactNode } from "r
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { headingId, textOf } from "@/lib/journalToc";
+import { Bars, Faq, FaqItem, Ref, Reference, References, makeCta } from "./ArticleParts";
 import s from "./article.module.css";
 
 /** `<Note>` / `<Note type="caution">` — supplementary or cautionary remark inside an article. */
@@ -46,7 +47,16 @@ function Img({ src, alt, title }: ComponentProps<"img">) {
 }
 
 /** Renders the MDX body with the shared article typography. Server-side, no client JS. */
-export function ArticleBody({ source }: { source: string }) {
+export function ArticleBody({
+  source,
+  fields,
+  preview,
+}: {
+  source: string;
+  fields: { slug: string; category: string; title: string };
+  preview: boolean;
+}) {
+  const Cta = makeCta(fields, preview);
   return (
     <div className={s.prose}>
       <MDXRemote
@@ -57,6 +67,13 @@ export function ArticleBody({ source }: { source: string }) {
           h2,
           h3,
           Note,
+          Ref,
+          Bars,
+          Faq,
+          FaqItem,
+          References,
+          Reference,
+          Cta,
           img: Img,
           // A paragraph that only wraps an image must not be a <p> (a <figure> cannot live inside it).
           p: ({ children, ...rest }) => {
