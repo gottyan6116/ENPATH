@@ -28,10 +28,13 @@ export function JournalListing({
   items,
   initialCategory,
   preview,
+  samples = false,
 }: {
   items: ListingItem[];
   initialCategory: string;
   preview: boolean;
+  /** Items are pre-publication samples: don't present a story count as if they were published. */
+  samples?: boolean;
 }) {
   const [category, setCategory] = useState(initialCategory);
 
@@ -83,7 +86,9 @@ export function JournalListing({
             <h2 id="latest-heading">{category === "all" ? "注目の記事" : current.label}</h2>
             <p>{current.description}</p>
           </div>
-          <span aria-live="polite">{String(shown.length).padStart(2, "0")} STORIES</span>
+          {!samples && (
+            <span aria-live="polite">{String(shown.length).padStart(2, "0")} STORIES</span>
+          )}
         </div>
         {shown.length ? (
           <JournalReveal key={category} className={s.grid}>

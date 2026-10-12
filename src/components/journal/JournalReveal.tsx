@@ -22,7 +22,7 @@ export function JournalReveal({
         const mm = gsap.matchMedia();
         mm.add("(prefers-reduced-motion: no-preference)", () => {
           const items = Array.from(el.children) as HTMLElement[];
-          gsap.set(items, { opacity: 0, y: 32 });
+          gsap.set(items, { opacity: 0, y: 22 });
           ScrollTrigger.batch(items, {
             start: "top 90%",
             once: true,
@@ -30,7 +30,7 @@ export function JournalReveal({
               gsap.to(batch, {
                 opacity: 1,
                 y: 0,
-                duration: 0.8,
+                duration: 0.65,
                 ease: "power3.out",
                 stagger: 0.1,
                 overwrite: true,

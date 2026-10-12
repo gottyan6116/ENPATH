@@ -726,3 +726,81 @@
 .gridItem {
   min-width: 0;
 }
+
+/* ---- 3-column article cards (thumbnail / category pill / title) ---- */
+.grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 56px 28px;
+}
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.cardImage {
+  aspect-ratio: 16 / 9;
+  border-radius: 5px;
+}
+.cardImage img {
+  object-fit: cover;
+  transition: transform 0.45s ease-out;
+}
+.cardLink:hover .cardImage img {
+  transform: scale(1.03);
+}
+.card .category {
+  margin: 0 0 12px;
+  align-self: flex-start;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #4a453e;
+  background: #efe8da;
+  border: 0;
+  border-radius: 999px;
+  padding: 3px 14px;
+}
+.card h3 {
+  font-size: clamp(20px, 1.9vw, 24px);
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+@media (max-width: 1199px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 24px;
+  }
+}
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .cardLink {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .cardImage {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+  }
+  .card h3 {
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  .card .category {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cardImage img {
+    transition: none;
+  }
+  .cardLink:hover .cardImage img {
+    transform: none;
+  }
+}
