@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { fallbackSlides, heroImages } from "@/content/journalHero";
 import { FeaturedStory, type HeroSlide } from "./FeaturedStory";
 import s from "./journalHero.module.css";
@@ -16,6 +16,7 @@ type Props = {
   heading?: { label: string; title: string; description: string };
 };
 
+const AUTOPLAY_MS = 10000;
 const pad = (n: number) => String(n).padStart(2, "0");
 const quiet = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -32,6 +33,29 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
     : fallbackSlides.map((x) => x.image);
   const count = slides.length || fallbackSlides.length;
   const many = count > 1 && !compact;
+
+  // Auto-advance every 10s. Pauses on hover/focus, when off-screen, with reduced motion, or when the user pauses it.
+  const [userPaused, setUserPaused] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [focusIn, setFocusIn] = useState(false);
+  const [onScreen, setOnScreen] = useState(true);
+  const [calm, setCalm] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setCalm(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    const el = root.current;
+    const io = el
+      ? new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0.35 })
+      : null;
+    if (el && io) io.observe(el);
+    return () => {
+      mq.removeEventListener("change", sync);
+      io?.disconnect();
+    };
+  }, []);
+  const playing = many && !calm && !userPaused && !hover && !focusIn && onScreen;
 
   const go = useCallback(
     (to: number) => {
@@ -166,6 +190,14 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
     };
   }, []);
 
+  useEffect(() => {
+    if (!playing) return;
+    const id = window.setTimeout(() => {
+      if (!document.hidden) go(activeRef.current + 1);
+    }, AUTOPLAY_MS);
+    return () => window.clearTimeout(id);
+  }, [playing, active, go]);
+
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (!many) return;
     if (e.key === "ArrowRight") go(activeRef.current + 1);
@@ -177,9 +209,16 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
       ref={root}
       className={`${s.hero} ${compact ? s.compact : ""}`}
       data-ready="false"
+      data-playing={playing ? "true" : "false"}
       aria-roledescription={many ? "carousel" : undefined}
       aria-label="ENPATH JOURNAL 特集"
       onKeyDown={onKeyDown}
+      onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
+      onPointerLeave={(e) => e.pointerType === "mouse" && setHover(false)}
+      onFocusCapture={() => setFocusIn(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocusIn(false);
+      }}
     >
       <div
         className={s.frame}
@@ -283,6 +322,16 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
                     <button type="button" onClick={() => go(activeRef.current + 1)} aria-label="次の特集">
                       <ArrowRight size={18} aria-hidden="true" />
                     </button>
+                    {!calm && (
+                      <button
+                        type="button"
+                        onClick={() => setUserPaused((v) => !v)}
+                        aria-label={userPaused ? "自動切り替えを再開" : "自動切り替えを停止"}
+                        aria-pressed={userPaused}
+                      >
+                        {userPaused ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}
+                      </button>
+                    )}
                   </div>
                 )}
                 <FeaturedStory slides={slides} active={active} preview={preview} />

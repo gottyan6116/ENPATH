@@ -12,13 +12,16 @@ import {
   articleHref,
   type JournalQuery,
 } from "@/lib/journal";
-import { JournalShell, JournalCTA } from "@/components/journal/Journal";
+import {
+  JournalShell,
+  JournalCTA,
+  ArticleCard,
+} from "@/components/journal/Journal";
 import {
   JournalHero,
   type HeroSlide,
 } from "@/components/journal/JournalHero";
-import { JournalCategoryNav } from "@/components/journal/JournalCategoryNav";
-import { JournalArticleGrid } from "@/components/journal/JournalArticleGrid";
+import { JournalListing } from "@/components/journal/JournalListing";
 import { readyForIndexing, siteUrl } from "@/lib/config";
 import s from "@/components/journal/journal.module.css";
 type Props = { searchParams: Promise<JournalQuery> };
@@ -64,13 +67,11 @@ export default async function JournalPage({ searchParams }: Props) {
   const preview = isJournalPreview(query);
   const articles = await getVisibleArticles(preview);
   const selected = journalCategories.find((item) => item.id === query.category);
-  const filtered = selected
-    ? articles.filter((article) => article.category === selected.id)
-    : articles;
-  // Hero stories: featured articles first, then the newest ones. No articles -> design fallback.
+  // The hero is independent of the selected category: featured articles first, then the newest.
+  // No articles -> design fallback.
   const heroArticles = [
-    ...filtered.filter((article) => article.featured),
-    ...filtered.filter((article) => !article.featured),
+    ...articles.filter((article) => article.featured),
+    ...articles.filter((article) => !article.featured),
   ].slice(0, 3);
   const slides: HeroSlide[] = heroArticles.map((article) => ({
     slug: article.slug,
@@ -83,42 +84,17 @@ export default async function JournalPage({ searchParams }: Props) {
   }));
   return (
     <JournalShell preview={preview}>
-      <JournalHero
-        slides={slides}
-        compact={Boolean(selected)}
-        preview={preview}
-        heading={
-          selected
-            ? {
-                label: "ENPATH JOURNAL",
-                title: selected.label,
-                description: selected.description,
-              }
-            : undefined
-        }
-      />
+      <JournalHero slides={slides} preview={preview} />
       <div className={s.wrap}>
-        <JournalCategoryNav selectedId={selected?.id} preview={preview} />
-        <section className={s.latest} aria-labelledby="latest-heading">
-          <div className={s.sectionTitle}>
-            <div>
-              <h2 id="latest-heading">
-                {selected ? selected.label : "注目の記事"}
-              </h2>
-              <p>
-                {selected
-                  ? selected.description
-                  : "いま読んでほしい、ピックアップ記事です。"}
-              </p>
-            </div>
-            <span>{String(filtered.length).padStart(2, "0")} STORIES</span>
-          </div>
-          <JournalArticleGrid
-            articles={filtered}
-            preview={preview}
-            hasFeatured={heroArticles.length > 0}
-          />
-        </section>
+        <JournalListing
+          items={articles.map((article) => ({
+            slug: article.slug,
+            category: article.category,
+            node: <ArticleCard article={article} preview={preview} />,
+          }))}
+          initialCategory={selected?.id ?? "all"}
+          preview={preview}
+        />
         <section className={s.about}>
           <p className={s.eyebrow}>ABOUT THIS JOURNAL</p>
           <div>
@@ -134,7 +110,7 @@ export default async function JournalPage({ searchParams }: Props) {
         </section>
       </div>
       <JournalCTA preview={preview} />
-      {base && !preview && filtered.length > 0 && (
+      {base && !preview && articles.length > 0 && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -146,7 +122,7 @@ export default async function JournalPage({ searchParams }: Props) {
               url: new URL("/journal", base).href,
               mainEntity: {
                 "@type": "ItemList",
-                itemListElement: filtered.map((article, index) => ({
+                itemListElement: articles.map((article, index) => ({
                   "@type": "ListItem",
                   position: index + 1,
                   url: new URL(articleHref(article.slug, false), base).href,
