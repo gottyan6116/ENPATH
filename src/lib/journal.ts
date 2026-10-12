@@ -12,6 +12,10 @@ export type JournalArticle = {
   updatedAt: string | null;
   author: string | null;
   coverImage: string;
+  /** Alt text of the eye-catch image. Required for published articles. */
+  imageAlt: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
   featured: boolean;
   status: "draft" | "published";
   body: string;
@@ -34,13 +38,24 @@ export function parseArticle(source: string, filename: string): JournalArticle {
   if (!data || typeof data !== "object" || Array.isArray(data))
     return fail("frontmatterには項目名と値が必要です。");
   const body = source.slice(frontmatter[0].length).trim();
+  // `date` and `image` are accepted as aliases of `publishedAt` and `coverImage`.
+  const aliases: Record<string, string> = { publishedAt: "date", coverImage: "image" };
+  const raw = (key: string) => data[key] ?? data[aliases[key] ?? ""];
   const string = (key: string) => {
-    if (typeof data[key] !== "string" || !data[key].trim())
+    const value = raw(key);
+    if (typeof value !== "string" || !value.trim())
       return fail(`${key}は空でない文字列が必要です。`);
-    return data[key].trim() as string;
+    return value.trim();
+  };
+  const optionalText = (key: string) => {
+    const value = data[key];
+    if (value == null || value === "") return null;
+    if (typeof value !== "string" || !value.trim())
+      return fail(`${key}は文字列、またはnullにしてください。`);
+    return value.trim();
   };
   const date = (key: string) => {
-    const value = data[key];
+    const value = raw(key);
     if (value == null || value === "") return null;
     if (
       typeof value !== "string" ||
@@ -75,8 +90,13 @@ export function parseArticle(source: string, filename: string): JournalArticle {
     return fail("coverImageはpublic内の/media/または/images/のパスです。");
   const publishedAt = date("publishedAt");
   const updatedAt = date("updatedAt");
+  const imageAlt = optionalText("imageAlt");
+  const seoTitle = optionalText("seoTitle");
+  const seoDescription = optionalText("seoDescription");
   if (data.status === "published" && (!publishedAt || !body))
     return fail("公開記事には公開日と承認済み本文が必要です。");
+  if (data.status === "published" && !imageAlt)
+    return fail("公開記事にはアイキャッチ画像の説明（imageAlt）が必要です。");
   if (updatedAt && (!publishedAt || updatedAt < publishedAt))
     return fail("更新日は公開日以降にしてください。");
   return {
@@ -88,6 +108,9 @@ export function parseArticle(source: string, filename: string): JournalArticle {
     updatedAt,
     author: typeof data.author === "string" ? data.author.trim() : null,
     coverImage,
+    imageAlt,
+    seoTitle,
+    seoDescription,
     featured: data.featured,
     status: data.status,
     body,

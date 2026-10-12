@@ -3,6 +3,7 @@ import path from "node:path";
 import { serialize } from "next-mdx-remote/serialize";
 import remarkGfm from "remark-gfm";
 import { getArticles, getPreviewBody } from "../src/lib/journal";
+import { extractToc } from "../src/lib/journalToc";
 async function validate() {
   const articles = await getArticles();
   const seen = new Set<string>();
@@ -11,6 +12,12 @@ async function validate() {
       throw new Error(`JOURNAL: slug重複: ${article.slug}`);
     seen.add(article.slug);
     await access(path.join(process.cwd(), "public", article.coverImage));
+    const ids = extractToc(article.body).map((item) => item.id);
+    const duplicate = ids.find((id, index) => ids.indexOf(id) !== index);
+    if (duplicate)
+      throw new Error(
+        `JOURNAL: ${article.slug}.mdx: 見出しが重複しています（目次のリンクが衝突します）: ${duplicate}`,
+      );
     if (article.body)
       try {
         await serialize(article.body, {

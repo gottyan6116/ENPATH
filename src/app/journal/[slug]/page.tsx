@@ -2,29 +2,46 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
+import "@fontsource-variable/noto-serif-jp";
 import {
+  getArticles,
   getVisibleArticles,
   getPreviewBody,
   isJournalPreview,
   articleHref,
+  visibleArticles,
   type JournalQuery,
 } from "@/lib/journal";
+import { extractToc } from "@/lib/journalToc";
 import { categoryLabel } from "@/content/journal";
 import {
   JournalShell,
   ArticleDate,
   ArticleCard,
-  JournalCTA,
 } from "@/components/journal/Journal";
-import { ArticleTracking } from "@/components/journal/JournalTracking";
+import {
+  ArticleTracking,
+  JournalBooking,
+} from "@/components/journal/JournalTracking";
+import { ArticleBody } from "@/components/journal/article/ArticleBody";
+import { ArticleSidebar } from "@/components/journal/article/ArticleSidebar";
+import { ArticleToc } from "@/components/journal/article/ArticleToc";
 import { readyForIndexing, siteUrl } from "@/lib/config";
-import s from "@/components/journal/journal.module.css";
+import s from "@/components/journal/article/article.module.css";
+import cards from "@/components/journal/journal.module.css";
+
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<JournalQuery>;
 };
+
+/** Only published articles are pre-rendered; drafts exist solely in the dev preview. */
+export async function generateStaticParams() {
+  return visibleArticles(await getArticles()).map((article) => ({
+    slug: article.slug,
+  }));
+}
+
 async function resolveArticle({ params, searchParams }: Props) {
   const [{ slug }, query] = await Promise.all([params, searchParams]);
   const preview = isJournalPreview(query);
@@ -33,12 +50,15 @@ async function resolveArticle({ params, searchParams }: Props) {
   if (!article) notFound();
   return { article, articles, preview };
 }
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { article, preview } = await resolveArticle(props);
   const url = articleHref(article.slug);
+  const title = article.seoTitle ?? article.title;
+  const description = article.seoDescription ?? article.description;
   return {
-    title: `${article.title} | ENPATH JOURNAL`,
-    description: article.description,
+    title: `${title} | ENPATH JOURNAL`,
+    description,
     alternates: { canonical: url },
     robots: {
       index: readyForIndexing && !preview,
@@ -46,42 +66,45 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     },
     openGraph: {
       type: "article",
-      title: article.title,
-      description: article.description,
+      title,
+      description,
       url,
-      images: [{ url: article.coverImage, alt: "記事のイメージ" }],
+      images: [{ url: article.coverImage, alt: article.imageAlt ?? "記事のイメージ" }],
       ...(article.publishedAt ? { publishedTime: article.publishedAt } : {}),
       ...(article.updatedAt ? { modifiedTime: article.updatedAt } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: article.title,
-      description: article.description,
+      title,
+      description,
       images: [article.coverImage],
     },
   };
 }
+
 export default async function ArticlePage(props: Props) {
   const { article, articles, preview } = await resolveArticle(props);
-  const related = articles
-    .filter((item) => item.slug !== article.slug)
-    .sort(
-      (a, b) =>
-        Number(b.category === article.category) -
-        Number(a.category === article.category),
-    )
-    .slice(0, 3);
+  const others = articles.filter((item) => item.slug !== article.slug);
+  // Same category first, then the rest; at most three.
+  const related = [
+    ...others.filter((item) => item.category === article.category),
+    ...others.filter((item) => item.category !== article.category),
+  ].slice(0, 3);
   const source = article.body || (preview ? await getPreviewBody() : "");
+  const toc = extractToc(source);
+  const journalHref = (query = "") =>
+    `/journal${query}${preview ? `${query ? "&" : "?"}preview=1` : ""}`;
+  const base = siteUrl;
   const jsonLd =
-    siteUrl && !preview
+    base && !preview
       ? [
           {
             "@context": "https://schema.org",
             "@type": "Article",
-            headline: article.title,
-            description: article.description,
-            image: new URL(article.coverImage, siteUrl).href,
-            mainEntityOfPage: new URL(articleHref(article.slug), siteUrl).href,
+            headline: article.seoTitle ?? article.title,
+            description: article.seoDescription ?? article.description,
+            image: new URL(article.coverImage, base).href,
+            mainEntityOfPage: new URL(articleHref(article.slug), base).href,
             datePublished: article.publishedAt,
             ...(article.updatedAt ? { dateModified: article.updatedAt } : {}),
             ...(article.author
@@ -95,55 +118,55 @@ export default async function ArticlePage(props: Props) {
               {
                 "@type": "ListItem",
                 position: 1,
-                name: "ENPATH",
-                item: siteUrl,
+                name: "ENPATH JOURNAL",
+                item: new URL("/journal", base).href,
               },
               {
                 "@type": "ListItem",
                 position: 2,
-                name: "ENPATH JOURNAL",
-                item: new URL("/journal", siteUrl).href,
+                name: categoryLabel(article.category),
+                item: new URL(`/journal?category=${article.category}`, base).href,
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: article.title,
-                item: new URL(articleHref(article.slug), siteUrl).href,
+                item: new URL(articleHref(article.slug), base).href,
               },
             ],
           },
         ]
       : null;
+  const fields = {
+    slug: article.slug,
+    category: article.category,
+    title: article.title,
+  };
+
   return (
     <JournalShell preview={preview}>
-      <ArticleTracking
-        fields={{
-          slug: article.slug,
-          title: article.title,
-          category: article.category,
-        }}
-        preview={preview}
-      />
-      <div className={s.wrap}>
-        <nav className={s.breadcrumb} aria-label="パンくずリスト">
-          <Link href="/">ホーム</Link>
-          <span aria-hidden="true">/</span>
-          <Link href={`/journal${preview ? "?preview=1" : ""}`}>
-            ENPATH JOURNAL
+      <ArticleTracking fields={fields} preview={preview} />
+      <div className={s.page}>
+        <nav className={s.crumbs} aria-label="パンくずリスト">
+          <Link href={journalHref()}>ENPATH JOURNAL</Link>
+          <span aria-hidden="true">＞</span>
+          <Link href={journalHref(`?category=${article.category}`)}>
+            {categoryLabel(article.category)}
           </Link>
-          <span aria-hidden="true">/</span>
-          <span>{categoryLabel(article.category)}</span>
+          <span aria-hidden="true">＞</span>
+          <span aria-current="page">{article.title}</span>
         </nav>
+
         <article>
-          <header className={s.articleHeader}>
-            <p className={s.category}>{categoryLabel(article.category)}</p>
-            <h1>{article.title}</h1>
+          <header className={s.head}>
+            <p className={s.pill}>{categoryLabel(article.category)}</p>
+            <h1 className={s.title}>{article.title}</h1>
             <p className={s.lead}>{article.description}</p>
-            <div className={s.date}>
+            <div className={s.meta}>
               <ArticleDate article={article} />
               {article.updatedAt && (
                 <span>
-                  更新：
+                  更新{" "}
                   <time dateTime={article.updatedAt}>
                     {article.updatedAt.replaceAll("-", ".")}
                   </time>
@@ -152,80 +175,62 @@ export default async function ArticlePage(props: Props) {
               {article.author && <span>執筆：{article.author}</span>}
             </div>
           </header>
-          <div className={s.articleCover}>
+          <div className={s.cover}>
             <Image
               src={article.coverImage}
-              alt="記事内容のイメージ（実際の受講者・コーチではありません）"
+              alt={article.imageAlt ?? ""}
               fill
               priority
-              sizes="(max-width: 768px) 100vw, 1040px"
+              sizes="(max-width: 1100px) 100vw, 1104px"
             />
           </div>
-          <p className={s.imageNote}>
+          <p className={s.caption}>
             写真はイメージです。実際の受講者・コーチを示すものではありません。
           </p>
-          {preview && (
-            <p className={s.bodyNotice}>
-              {article.body
-                ? "承認前の下書きです。本番では表示されません。"
-                : "本文は未作成です。以下は見出し・表・画像などのレイアウト確認用サンプルであり、この記事の本文ではありません。"}
-            </p>
-          )}
-          <div className={s.prose}>
-            <MDXRemote
-              source={source}
-              options={{
-                blockJS: true,
-                mdxOptions: { remarkPlugins: [remarkGfm] },
-              }}
-              components={{
-                h1: (props) => <h2 {...props} />,
-                img: ({ src, alt }) => (
-                  <Image
-                    src={typeof src === "string" ? src : ""}
-                    alt={alt ?? ""}
-                    width={1200}
-                    height={675}
-                    sizes="(max-width: 768px) 100vw, 720px"
-                  />
-                ),
-                table: (props) => (
-                  <div
-                    className={s.tableScroll}
-                    tabIndex={0}
-                    role="region"
-                    aria-label="表（横にスクロールできます）"
-                  >
-                    <table {...props} />
-                  </div>
-                ),
-                a: (props) => (
-                  <a
-                    {...props}
-                    rel={
-                      props.href?.startsWith("https://")
-                        ? "noopener noreferrer"
-                        : undefined
-                    }
-                  />
-                ),
-              }}
+
+          <div className={s.layout}>
+            <div className={s.main}>
+              <ArticleToc items={toc} variant="inline" />
+              {preview && (
+                <p className={s.notice}>
+                  {article.status === "draft"
+                    ? "開発用プレビューです。この記事は下書きのため、本番には表示されません。"
+                    : "開発用プレビューです。"}
+                  {article.body
+                    ? ""
+                    : "本文は未作成です。以下は表示確認用のサンプルで、この記事の本文ではありません。"}
+                </p>
+              )}
+              <ArticleBody source={source} />
+
+              <section className={s.endCta} aria-labelledby="end-cta-title">
+                <h2 id="end-cta-title">英語学習を、あなたに合った方法で。</h2>
+                <p>
+                  ENPATHでは、一人ひとりの目標や課題に合わせた学習プランをご提案しています。
+                </p>
+                <JournalBooking preview={preview} fields={fields} />
+              </section>
+
+              <nav className={s.endNav} aria-label="記事を読んだあとに">
+                <Link href={journalHref()}>← ENPATH JOURNALへ戻る</Link>
+                <Link href={journalHref(`?category=${article.category}`)}>
+                  「{categoryLabel(article.category)}」の記事を見る
+                </Link>
+              </nav>
+            </div>
+            <ArticleSidebar
+              article={article}
+              toc={toc}
+              related={related}
+              preview={preview}
             />
           </div>
         </article>
-        <nav className={s.articleNav} aria-label="記事を読んだあとに">
-          <Link href={`/journal${preview ? "?preview=1" : ""}`}>
-            ← JOURNAL一覧へ
-          </Link>
-          <Link href="/features">ENPATHの特徴 ↗</Link>
-          <Link href="/#coach">コーチについて ↗</Link>
-        </nav>
+
         {related.length > 0 && (
-          <section className={s.latest} aria-labelledby="related-heading">
-            <div className={s.sectionTitle}>
-              <h2 id="related-heading">あわせて読みたい</h2>
-            </div>
-            <div className={s.grid}>
+          <section className={s.relatedSection} aria-labelledby="related-heading">
+            <h2 id="related-heading">関連記事</h2>
+            <div className={cards.grid}>
               {related.map((item) => (
                 <ArticleCard
                   key={item.slug}
@@ -238,7 +243,6 @@ export default async function ArticlePage(props: Props) {
           </section>
         )}
       </div>
-      <JournalCTA article={article} preview={preview} />
       {jsonLd && (
         <script
           type="application/ld+json"
