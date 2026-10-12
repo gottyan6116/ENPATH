@@ -43,8 +43,13 @@ export async function generateStaticParams() {
 }
 
 async function resolveArticle({ params, searchParams }: Props) {
-  const [{ slug }, query] = await Promise.all([params, searchParams]);
-  const preview = isJournalPreview(query);
+  const { slug } = await params;
+  // Preview exists only in development. Never touch searchParams in production: reading it
+  // would turn the statically generated article pages into dynamic ones and break them.
+  const preview =
+    process.env.NODE_ENV === "development"
+      ? isJournalPreview(await searchParams)
+      : false;
   const articles = await getVisibleArticles(preview);
   const article = articles.find((item) => item.slug === slug);
   if (!article) notFound();
