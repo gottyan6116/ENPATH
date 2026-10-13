@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { fallbackSlides, heroImages } from "@/content/journalHero";
 import { FeaturedStory, type HeroSlide } from "./FeaturedStory";
 import s from "./journalHero.module.css";
@@ -41,7 +40,6 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
   const many = count > 1 && !compact;
 
   // Auto-advance every 10s. Pauses on hover/focus, when off-screen, with reduced motion, or when the user pauses it.
-  const [userPaused, setUserPaused] = useState(false);
   const [hover, setHover] = useState(false);
   const [focusIn, setFocusIn] = useState(false);
   const [onScreen, setOnScreen] = useState(true);
@@ -61,7 +59,7 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
       io?.disconnect();
     };
   }, []);
-  const playing = many && !calm && !userPaused && !hover && !focusIn && onScreen;
+  const playing = many && !calm && !hover && !focusIn && onScreen;
 
   const go = useCallback(
     (to: number) => {
@@ -320,44 +318,8 @@ export function JournalHero({ slides, compact = false, preview = false, heading 
           {!compact && (
             <div className={s.bottom}>
               <div className={s.featured} data-fade>
-                {many && (
-                  <div className={s.arrows} data-ui>
-                    <button type="button" onClick={() => go(activeRef.current - 1)} aria-label="前の特集">
-                      <ArrowLeft size={18} aria-hidden="true" />
-                    </button>
-                    <button type="button" onClick={() => go(activeRef.current + 1)} aria-label="次の特集">
-                      <ArrowRight size={18} aria-hidden="true" />
-                    </button>
-                    {!calm && (
-                      <button
-                        type="button"
-                        onClick={() => setUserPaused((v) => !v)}
-                        aria-label={userPaused ? "自動切り替えを再開" : "自動切り替えを停止"}
-                        aria-pressed={userPaused}
-                      >
-                        {userPaused ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}
-                      </button>
-                    )}
-                  </div>
-                )}
                 <FeaturedStory slides={slides} active={active} preview={preview} />
               </div>
-              {many && (
-                <ol className={s.dots} aria-label="特集の選択" data-ui>
-                  {Array.from({ length: count }, (_, i) => (
-                    <li key={i}>
-                      <button
-                        type="button"
-                        aria-label={`特集 ${pad(i + 1)}${slides[i] ? `：${slides[i].title}` : ""}`}
-                        aria-current={i === active ? "true" : undefined}
-                        onClick={() => go(i)}
-                      >
-                        {pad(i + 1)}
-                      </button>
-                    </li>
-                  ))}
-                </ol>
-              )}
             </div>
           )}
         </div>

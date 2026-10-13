@@ -41,7 +41,7 @@ export function FeaturedStory({
               style={i === 0 ? undefined : { visibility: "hidden" }}
               aria-hidden={i !== active}
             >
-              <p className={s.storyLabel} data-in>
+              <p className={`${s.storyLabel} sr-only`} data-in>
                 {f.label}
               </p>
               <h2 data-in>
@@ -63,7 +63,7 @@ export function FeaturedStory({
           style={i === 0 ? undefined : { visibility: "hidden" }}
           aria-hidden={i !== active}
         >
-          <p className={s.storyLabel} data-in>
+          <p className={`${s.storyLabel} sr-only`} data-in>
             FEATURED STORY / {pad(i + 1)}
             <span>{x.categoryLabel}</span>
           </p>
@@ -82,7 +82,7 @@ export function FeaturedStory({
                 });
             }}
           >
-            READ MORE <ArrowRight size={15} aria-hidden="true" />
+            記事を読む <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </div>
         );
