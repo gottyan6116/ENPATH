@@ -339,3 +339,16 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* STEP 01 thumbnail (phones only): the first photo has no real image yet and is cut from a reference
+   composite. Show the sharper 806x494 region at one uniform scale (cover-fit into the 124x88 box)
+   instead of letting the 265x93 thumbnail crop be stretched into it. */
+@media (max-width: 760px) {
+  .home-main .chapter:first-child .photo img {
+    object-fit: cover;
+    width: 220.6% !important;
+    height: 207.3% !important;
+    left: -112.7% !important;
+    top: -18.8% !important;
+  }
+}
