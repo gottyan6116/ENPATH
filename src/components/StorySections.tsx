@@ -15,46 +15,7 @@ import { Photo } from "./Photo";
 import { BookingLink } from "./BookingLink";
 
 export { AboutSection as PainPoints } from "./about/AboutSection";
-export function Goals() {
-  const goals = [
-    [BriefcaseBusiness, "ビジネス英語", "仕事の可能性を広げたい"],
-    [BookOpen, "TOEIC®・資格対策", "目標に向けて取り組みたい"],
-    [MessagesSquare, "日常英会話", "自分の言葉で話したい"],
-    [Plane, "海外生活・留学", "新しい世界に踏み出したい"],
-    [Sprout, "英語の学び直し", "もう一度、基礎から始めたい"],
-  ] as const;
-  return (
-    <section className="section goals-section">
-      <div className="container">
-        <SectionHeading label="YOUR GOALS">
-          あなたが英語を学ぶ理由は何ですか？
-        </SectionHeading>
-        <div className="goals-grid">
-          {goals.map(([Icon, title, detail], index) => (
-            <a
-              href="#roadmap"
-              data-roadmap-goal={
-                index === 0 ? "business" : index === 1 ? "toeic" : "daily"
-              }
-              key={title}
-            >
-              <Icon size={30} strokeWidth={1.4} />
-              <h3>{title}</h3>
-              <p>{detail}</p>
-              <ArrowRight size={18} />
-            </a>
-          ))}
-        </div>
-        <p className="goals-note">
-          目標は、一つでなくても大丈夫。
-          <span>
-            固定のコースに当てはめず、あなたの想いに合わせて学習を設計します。
-          </span>
-        </p>
-      </div>
-    </section>
-  );
-}
+export { GoalsSection as Goals } from "./goals/GoalsSection";
 export function Support() {
   const items: {
     en: string;

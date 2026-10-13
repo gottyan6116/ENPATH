@@ -19,6 +19,15 @@ export function AboutSection() {
   return (
     <section id="about" className={`section ${s.section}`} aria-labelledby="about-title">
       <div className={s.wrap}>
+        <div className={s.title}>
+          <p className={s.eyebrow}>FIND YOUR STARTING POINT</p>
+          <h2 id="about-title">
+            英語学習、こんな悩みは
+            <br />
+            ありませんか？
+          </h2>
+        </div>
+
         <div className={s.stage}>
           <div className={s.before} aria-hidden="true" />
           <div className={s.after} aria-hidden="true" />
@@ -38,12 +47,6 @@ export function AboutSection() {
         </div>
 
         <div className={s.copy}>
-          <p className={s.eyebrow}>FIND YOUR STARTING POINT</p>
-          <h2 id="about-title">
-            英語学習、こんな悩みは
-            <br />
-            ありませんか？
-          </h2>
           <p className={s.lead}>
             頑張りたい気持ちは、もうある。
             <br />

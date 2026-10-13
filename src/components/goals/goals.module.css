@@ -1,0 +1,201 @@
+.section {
+  --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+}
+.wrap {
+  max-width: 1120px;
+}
+.lead {
+  margin-top: 18px;
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 2;
+  letter-spacing: 0.04em;
+  color: #4a5b66;
+}
+.grid {
+  margin-top: clamp(28px, 3vw, 44px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 24px);
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #d6e3e0;
+  border-radius: 8px;
+  overflow: hidden;
+  color: var(--navy);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  border-color: var(--teal-dark);
+  box-shadow: 0 14px 28px -22px rgba(15, 45, 74, 0.5);
+}
+.card:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 3px;
+}
+.photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #e8efee;
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease-out;
+}
+.card:hover .photo img {
+  transform: scale(1.03);
+}
+.badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--teal-dark);
+}
+.body {
+  display: block;
+  padding: 16px 20px 20px;
+}
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.titleRow h3 {
+  font-family: var(--serif);
+  font-size: clamp(17px, 1.6vw, 22px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+.arrow {
+  flex-shrink: 0;
+  color: var(--teal-dark);
+  transition: transform 0.3s;
+}
+.card:hover .arrow {
+  transform: translateX(4px);
+}
+.detail {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(12.5px, 1vw, 14px);
+  line-height: 1.8;
+  color: #5b6b76;
+}
+.wide {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: stretch;
+}
+.wide .photo {
+  flex: 0 0 40%;
+  aspect-ratio: auto;
+  min-height: 190px;
+}
+.wide .body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 32px;
+}
+.note {
+  margin-top: clamp(28px, 3vw, 40px);
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.note span {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #5b6b76;
+  line-height: 1.9;
+}
+
+@media (max-width: 760px) {
+  .wrap {
+    padding-inline: 16px;
+  }
+  .lead {
+    font-size: 14px;
+  }
+  .grid {
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .card {
+    border-radius: 8px;
+  }
+  .badge {
+    left: 8px;
+    bottom: 8px;
+    width: 32px;
+    height: 32px;
+  }
+  .badge svg {
+    width: 17px;
+    height: 17px;
+  }
+  .body {
+    padding: 11px 12px 14px;
+  }
+  .titleRow {
+    gap: 6px;
+  }
+  .titleRow h3 {
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 1.45;
+    word-break: auto-phrase;
+    text-wrap: balance;
+  }
+  .arrow {
+    width: 16px;
+    height: 16px;
+  }
+  .detail {
+    font-size: 11.5px;
+    line-height: 1.6;
+    margin-top: 4px;
+    word-break: auto-phrase;
+    text-wrap: balance;
+  }
+  .wide .photo {
+    flex-basis: 44%;
+    min-height: 130px;
+  }
+  .wide .body {
+    padding: 12px 14px;
+  }
+  .note {
+    text-align: left;
+    padding-inline: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .photo img,
+  .arrow {
+    transition: none;
+  }
+  .card:hover .photo img,
+  .card:hover .arrow {
+    transform: none;
+  }
+}

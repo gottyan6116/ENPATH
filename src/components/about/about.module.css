@@ -82,14 +82,18 @@
   letter-spacing: 0.22em;
   color: var(--teal-dark);
 }
-.copy h2 {
+.title {
+  text-align: center;
+  margin-bottom: clamp(24px, 2.6vw, 40px);
+}
+.title h2 {
   font-family: var(--serif);
   font-size: clamp(26px, 2.9vw, 42px);
   font-weight: 500;
   line-height: 1.55;
   letter-spacing: 0.03em;
   color: var(--navy);
-  margin: 14px 0 16px;
+  margin: 14px 0 0;
 }
 .lead {
   font-size: clamp(14px, 1.1vw, 16px);
@@ -214,7 +218,12 @@
     padding-inline: 22px;
     margin-top: 28px;
   }
-  .copy h2 {
+  .title {
+    text-align: left;
+    padding-inline: 22px;
+    margin-bottom: 20px;
+  }
+  .title h2 {
     font-size: 27px;
     text-wrap: balance;
   }
