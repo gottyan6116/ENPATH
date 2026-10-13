@@ -1,0 +1,260 @@
+.section {
+  --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: #fbfaf7;
+  padding-block: clamp(56px, 6vw, 96px);
+  overflow: hidden;
+}
+.wrap {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-inline: clamp(0px, 4vw, 64px);
+  text-align: center;
+}
+
+/* ---------- Before / After visual: everything positioned in % of the stage ---------- */
+.stage {
+  position: relative;
+  aspect-ratio: 2.55 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(105deg, #fffdf8 0%, #fdf7ee 55%, #f7efe2 100%);
+  text-align: left;
+}
+.before {
+  position: absolute;
+  inset: 0;
+  background: #e9ebec;
+  clip-path: polygon(0 0, 52% 0, 44% 100%, 0 100%);
+}
+.after {
+  display: none;
+}
+.pic {
+  position: absolute;
+  height: auto;
+  display: block;
+}
+.beforeWoman {
+  left: 14%;
+  bottom: 0;
+  width: 25%;
+  filter: grayscale(1) contrast(0.95);
+}
+.afterWoman {
+  left: 57%;
+  bottom: 0;
+  width: 25%;
+}
+.b1 { left: 2.5%; top: 7%; width: 17%; }
+.b2 { left: 22%; top: 4%; width: 16.5%; }
+.b3 { left: 38%; top: 36%; width: 15.5%; }
+.b4 { left: 1.5%; top: 60%; width: 17.5%; }
+.arrow {
+  left: 41%;
+  top: 56%;
+  width: 14.5%;
+  z-index: 3;
+}
+.labelBefore {
+  left: 2.5%;
+  bottom: 4%;
+  width: 7.5%;
+  opacity: 0.85;
+}
+.labelAfter {
+  right: 3%;
+  bottom: 6%;
+  width: 8.5%;
+}
+.hand {
+  right: 3%;
+  top: 8%;
+  width: 22%;
+}
+
+/* ---------- text ---------- */
+.copy {
+  text-align: center;
+  margin-top: clamp(28px, 3vw, 44px);
+}
+.eyebrow {
+  font: 600 12px/1.5 var(--font-en);
+  letter-spacing: 0.22em;
+  color: var(--teal-dark);
+}
+.copy h2 {
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.9vw, 42px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+  color: var(--navy);
+  margin: 14px 0 16px;
+}
+.lead {
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 2;
+  color: #4a5b66;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- 5 concerns ---------- */
+.list {
+  margin-top: clamp(28px, 3vw, 44px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid #dfe6e8;
+  border-bottom: 1px solid #dfe6e8;
+  text-align: left;
+}
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-content: start;
+  padding: 22px 16px 24px 18px;
+  border-left: 1px solid #dfe6e8;
+  color: var(--navy);
+  transition: background 0.25s;
+  min-height: 112px;
+}
+.item:first-child {
+  border-left: 0;
+}
+.item:hover {
+  background: #f2f7f6;
+}
+.no {
+  font: 400 15px/1.6 var(--font-en);
+  color: var(--teal-dark);
+}
+.text {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  font-family: var(--serif);
+  font-size: clamp(12.5px, 0.98vw, 15px);
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  word-break: auto-phrase;
+  text-wrap: balance;
+}
+.chev {
+  display: none;
+}
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin: 28px auto 0;
+  min-height: 48px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--navy);
+  border-bottom: 1px solid var(--navy);
+}
+.more svg {
+  transition: transform 0.25s;
+}
+.more:hover svg {
+  transform: translateX(4px);
+}
+.item:focus-visible,
+.more:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 3px;
+}
+
+/* ---------- tablet ---------- */
+@media (max-width: 1100px) {
+  .stage {
+    aspect-ratio: 2 / 1;
+  }
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .item:nth-child(4) {
+    border-left: 0;
+  }
+  .item:nth-child(n + 4) {
+    border-top: 1px solid #dfe6e8;
+  }
+  .beforeWoman { width: 27%; left: 9%; }
+  .afterWoman { width: 28%; left: 54%; }
+  .b3 { left: 36%; }
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 760px) {
+  .section {
+    padding-block: 28px 56px;
+  }
+  .wrap {
+    padding-inline: 0;
+    text-align: left;
+  }
+  .stage {
+    aspect-ratio: 1 / 1.02;
+    border-radius: 0;
+  }
+  .before {
+    clip-path: polygon(0 0, 56% 0, 48% 100%, 0 100%);
+  }
+  .beforeWoman { left: -2%; width: 47%; }
+  .afterWoman { left: auto; right: -1%; width: 54%; }
+  .b1 { left: 3%; top: 3%; width: 34%; }
+  .b2 { left: 21%; top: 12%; width: 33%; }
+  .b3 { left: 3%; top: 24%; width: 32%; }
+  .b4 { left: 22%; top: 34%; width: 34%; }
+  .arrow { left: 38%; top: 55%; width: 25%; }
+  .labelBefore { left: 3%; top: 46%; width: 15%; }
+  .labelAfter { right: 3%; top: 46%; width: 15%; }
+  .hand { right: 4%; top: 4%; width: 38%; }
+  .copy {
+    text-align: left;
+    padding-inline: 22px;
+    margin-top: 28px;
+  }
+  .copy h2 {
+    font-size: 27px;
+    text-wrap: balance;
+  }
+  .lead {
+    font-size: 14.5px;
+  }
+  .list {
+    grid-template-columns: 1fr;
+    margin: 24px 22px 0;
+    border-bottom: 0;
+  }
+  .item {
+    grid-template-columns: 34px 1fr auto;
+    align-items: center;
+    column-gap: 8px;
+    padding: 0;
+    min-height: 60px;
+    border-left: 0;
+    border-bottom: 1px solid #dfe6e8;
+  }
+  .item:nth-child(n + 4) {
+    border-top: 0;
+  }
+  .text {
+    grid-column: auto;
+    margin: 0;
+    padding-block: 14px;
+    font-size: 15px;
+  }
+  .chev {
+    display: block;
+    color: #7d8f96;
+  }
+  .more {
+    margin: 22px 22px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .more svg {
+    transition: none;
+  }
+}

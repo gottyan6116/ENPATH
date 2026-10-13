@@ -14,48 +14,7 @@ import { TrackedLink } from "./TrackedLink";
 import { Photo } from "./Photo";
 import { BookingLink } from "./BookingLink";
 
-export function PainPoints() {
-  const concerns = [
-    "何から勉強すればよいかわからない",
-    "自分に合った学習方法がわからない",
-    "やる気はあるのに、なかなか続かない",
-    "勉強していても、成長を実感できない",
-    "目標までの道筋が、まだ見えない",
-  ];
-  return (
-    <section id="about" className="section pain-section">
-      <div className="container pain-layout">
-        <div>
-          <SectionHeading label="FIND YOUR STARTING POINT">
-            英語学習、こんな悩みは
-            <br />
-            ありませんか？
-          </SectionHeading>
-          <p className="body-copy">
-            頑張りたい気持ちは、もうある。
-            <br />
-            必要なのは、自分に合った進め方と、
-            <br />
-            一緒に考えてくれる人かもしれません。
-          </p>
-          <a href="#approach" className="text-link">
-            ENPATHができること
-            <ArrowRight size={18} />
-          </a>
-        </div>
-        <ul className="concerns">
-          {concerns.map((text, i) => (
-            <li key={text}>
-              <span>0{i + 1}</span>
-              {text}
-              <span className="concern-dot" />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
+export { AboutSection as PainPoints } from "./about/AboutSection";
 export function Goals() {
   const goals = [
     [BriefcaseBusiness, "ビジネス英語", "仕事の可能性を広げたい"],
