@@ -15,6 +15,7 @@ import { Footer } from "@/components/Footer";
 import { ServiceObserver } from "@/components/ServiceObserver";
 import { ScrollExperience } from "@/components/ScrollExperience";
 import { siteUrl } from "@/lib/config";
+import "./home-mobile.css";
 import { JournalTeaser } from "@/components/journal/Journal";
 export default function Home() {
   return (
@@ -24,7 +25,7 @@ export default function Home() {
       </a>
       <div id="top" />
       <Header />
-      <main id="main">
+      <main id="main" className="home-main">
         <Hero />
         <PainPoints />
         <Goals />

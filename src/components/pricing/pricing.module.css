@@ -477,6 +477,52 @@
     text-align: left;
   }
 }
+/* Phones: price first, then who it is for, then the support cycle. */
+@media (max-width: 760px) {
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .side {
+    display: contents;
+  }
+  .plan {
+    order: 1;
+  }
+  .recommend {
+    order: 2;
+  }
+  .cycle {
+    order: 3;
+  }
+  .head h2 {
+    font-size: 26px;
+    text-wrap: balance;
+  }
+  .prices {
+    margin: 18px 0 20px;
+  }
+  .prices b {
+    font-size: 34px;
+    letter-spacing: 0;
+  }
+  .prices dd span {
+    font-size: 15px;
+  }
+  .included {
+    grid-template-columns: 1fr;
+  }
+  .cta :global(.button) {
+    min-height: 58px;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    padding-inline: 18px;
+    gap: 10px;
+    white-space: nowrap;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .cta :global(.button) {
     transition: none;

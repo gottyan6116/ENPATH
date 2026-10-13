@@ -1,0 +1,341 @@
+/* Top page only, phones only. Every rule is scoped by `.home-main` (or `body:has(.home-main)` for the
+   shared header/footer), so PC and every other page are untouched. Breakpoint matches the site's 760px. */
+@media (max-width: 760px) {
+  /* ---- fixed header: opaque, compact, anchors never hide behind it ---- */
+  html:has(.home-main) {
+    scroll-padding-top: 84px;
+  }
+  body:has(.home-main) .header {
+    background: #fff;
+    z-index: 60;
+    border-bottom-color: #e3eaed;
+  }
+  body:has(.home-main) .header-inner {
+    height: 68px;
+    padding-inline: 20px;
+  }
+  body:has(.home-main) .brand img {
+    width: 124px;
+    height: 41px;
+  }
+  body:has(.home-main) .menu-toggle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  body:has(.home-main) .header .mobile-nav:not([hidden]) {
+    top: 68px;
+    max-height: calc(100dvh - 68px);
+  }
+
+  /* ---- floating "01 / 05" pill -> inline links at section ends ---- */
+  body:has(.home-main) .journey-nav {
+    display: none;
+  }
+  body:has(.home-main) footer {
+    padding-bottom: 0;
+  }
+  .home-main .journey-inline {
+    padding: 22px 22px 40px;
+  }
+  .home-main .journey-inline a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1px solid #cfe0dc;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    font-size: 13px;
+  }
+  .home-main .journey-inline-pos {
+    font: 500 13px var(--font-en);
+    white-space: nowrap;
+  }
+  .home-main .journey-inline-pos span {
+    color: #72858e;
+  }
+  .home-main .journey-inline-label {
+    flex: 1;
+    font-weight: 500;
+  }
+
+  /* ---- shared rhythm ---- */
+  .home-main .container {
+    padding-inline: 22px;
+  }
+  .home-main .section {
+    padding-block: 64px;
+  }
+  .home-main .section-heading h2 {
+    font-size: 28px;
+    line-height: 1.55;
+    text-wrap: balance;
+  }
+  .home-main .button {
+    min-height: 54px;
+  }
+
+  /* ---- first view ---- */
+  .home-main .hero-content {
+    padding-top: 28px;
+  }
+  .home-main .hero h1 {
+    font-size: 32px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  .home-main .hero h1 br {
+    display: block;
+  }
+  .home-main .hero-description {
+    font-size: 15px;
+    line-height: 1.95;
+    margin-top: 18px;
+  }
+  .home-main .hero-actions {
+    margin-top: 26px;
+    gap: 6px;
+  }
+  .home-main .hero-actions .button {
+    width: 100%;
+  }
+  .home-main .hero-actions .text-link {
+    min-height: 48px;
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+  .home-main .hero-visual .photo img,
+  .home-main .hero-visual img {
+    object-position: 58% 30%;
+  }
+
+  /* ---- 出会いから、その先の一歩まで: three steps stacked ---- */
+  .home-main .chapter-band {
+    padding: 36px 0 32px;
+  }
+  .home-main .chapter-intro {
+    margin-bottom: 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .home-main .chapter-intro .eyebrow {
+    font-size: 11px;
+  }
+  .home-main .chapter-intro p {
+    font-size: 14px;
+  }
+  .home-main .chapter-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .home-main .chapter {
+    display: grid;
+    grid-template-columns: 124px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: center;
+    text-align: left;
+    padding: 0;
+  }
+  .home-main .chapter .photo,
+  .home-main .chapter:first-child .photo {
+    height: 88px;
+    border-radius: 4px;
+    grid-row: 1 / span 2;
+  }
+  .home-main .chapter-label {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+  }
+  .home-main .chapter-number {
+    font-size: 24px;
+    min-width: 34px;
+  }
+  .home-main .chapter-label > span:nth-child(2) strong,
+  .home-main .chapter-label strong {
+    font-size: 16px;
+    white-space: normal;
+  }
+  .home-main .chapter-label small {
+    font-size: 11px;
+  }
+  .home-main .chapter-label > svg {
+    margin-left: auto;
+  }
+  .home-main .chapter-line {
+    grid-column: 2;
+  }
+  .home-main .chapter-detail {
+    padding-top: 6px;
+  }
+  .home-main .chapter-detail p {
+    font-size: 14px;
+    line-height: 1.9;
+  }
+
+  /* ---- 悩み ---- */
+  .home-main .pain-section h2 {
+    text-wrap: balance;
+  }
+  .home-main .concerns li {
+    min-height: 56px;
+    padding-block: 12px;
+  }
+
+  /* ---- 英語を学ぶ理由: 2 columns, last item full width ---- */
+  .home-main .goals-grid {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 28px;
+  }
+  .home-main .goals-grid > a {
+    min-height: 132px;
+    padding: 22px 18px 24px;
+    border-left: 0;
+    border-bottom: 1px solid #bedbd2;
+  }
+  .home-main .goals-grid > a:nth-child(even) {
+    border-left: 1px solid #bedbd2;
+  }
+  .home-main .goals-grid > a:nth-child(odd) {
+    padding-left: 0;
+  }
+  .home-main .goals-grid > a:last-child {
+    grid-column: 1 / -1;
+    border-left: 0;
+    border-bottom: 0;
+    padding-left: 0;
+  }
+
+  /* ---- 知りたいことから ---- */
+  .home-main .feature-explorer-links > a {
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  /* ---- 目標が違えば、学び方も違う ---- */
+  .home-main .approach {
+    padding-block: 64px;
+  }
+  .home-main .approach-detail h3 {
+    font-size: 20px;
+    line-height: 1.55;
+  }
+
+  /* ---- 学習ロードマップ ---- */
+  .home-main .roadmap-tabs button {
+    padding: 14px 6px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    text-align: center;
+    justify-content: center;
+    min-height: 56px;
+  }
+  .home-main .roadmap-tabs button:nth-child(2) {
+    flex: 1.1;
+  }
+  .home-main .roadmap-tabs button:nth-child(3) {
+    flex: 1.7;
+  }
+  .home-main .roadmap-tabs button {
+    text-wrap: balance;
+  }
+  .home-main .roadmap-tabs button svg {
+    display: none;
+  }
+  .home-main .roadmap-tabs button[aria-selected="true"] {
+    font-weight: 700;
+  }
+  .home-main .week-grid .weekend {
+    background: var(--gray);
+  }
+
+  /* ---- 5つのサポート ---- */
+  .home-main .support-list article {
+    padding-block: 26px;
+  }
+  .home-main .support-list h3 {
+    font-size: 19px;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+  .home-main .support-list p {
+    font-size: 14px;
+    line-height: 1.95;
+  }
+
+  /* ---- 比較表: scrolls inside its own box, first column pinned ---- */
+  .home-main .table-scroll {
+    position: relative;
+    margin-inline: -22px;
+    padding-inline: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .home-main .table-scroll::before {
+    content: "← 横にスクロールして比較できます →";
+    position: sticky;
+    left: 0;
+    display: block;
+    width: calc(100vw);
+    padding: 0 22px 10px;
+    font-size: 11.5px;
+    color: #587084;
+    letter-spacing: 0.04em;
+  }
+  .home-main .comparison-table {
+    min-width: 640px;
+  }
+  .home-main .comparison-table th,
+  .home-main .comparison-table td {
+    padding: 16px 14px;
+    font-size: 13px;
+  }
+  .home-main .comparison-table tbody th,
+  .home-main .comparison-table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #f4f6f8;
+    min-width: 108px;
+    box-shadow: 1px 0 0 #dae2e8;
+  }
+  .home-main .comparison-table thead th:first-child {
+    z-index: 3;
+  }
+  .home-main .comparison-table td {
+    min-width: 132px;
+  }
+
+  /* ---- ENPATHの始め方 ---- */
+  .home-main .process-list > * {
+    padding-block: 22px;
+  }
+
+  /* ---- FAQ ---- */
+  .home-main .faq-list summary {
+    min-height: 64px;
+    padding: 18px 0;
+    font-size: 15px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .home-main .faq-list summary svg {
+    margin-top: 5px;
+  }
+  .home-main .faq-q {
+    line-height: 1.5;
+  }
+  .home-main .faq-list details > p {
+    padding: 0 0 22px 32px;
+    font-size: 14px;
+    line-height: 1.95;
+    overflow-wrap: anywhere;
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { ArrowDown, ArrowRight } from "lucide-react";
 
 const stops = [
@@ -14,6 +15,25 @@ const stops = [
 export function ScrollExperience() {
   const [current, setCurrent] = useState(-1);
   const progress = useRef<HTMLDivElement>(null);
+  // Phones: the floating pill is replaced by inline links at the end of the section before each stop,
+  // so nothing is ever covered. Rendered only on phones (no duplicate DOM on desktop).
+  const [phone, setPhone] = useState(false);
+  const [inlineHosts, setInlineHosts] = useState<(HTMLElement | null)[]>([]);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 760px)");
+    const sync = () => setPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
+    if (!phone) return setInlineHosts([]);
+    setInlineHosts(
+      stops.map(([id], i) =>
+        i === 0 ? null : (document.getElementById(id)?.previousElementSibling as HTMLElement | null) ?? null,
+      ),
+    );
+  }, [phone]);
   useEffect(() => {
     let disposed = false;
     let cleanup = () => {};
@@ -133,6 +153,27 @@ export function ScrollExperience() {
           )}
         </a>
       </nav>
+      {phone &&
+        inlineHosts.map((host, i) =>
+          host
+            ? createPortal(
+                <nav
+                  className="journey-inline"
+                  aria-label={`ページの見どころ ${String(i).padStart(2, "0")} / 05`}
+                >
+                  <a href={`#${stops[i][0]}`}>
+                    <span className="journey-inline-pos">
+                      {String(i).padStart(2, "0")} <span>/ 05</span>
+                    </span>
+                    <span className="journey-inline-label">次へ：{stops[i][1]}</span>
+                    <ArrowDown size={16} aria-hidden="true" />
+                  </a>
+                </nav>,
+                host,
+                `journey-inline-${i}`,
+              )
+            : null,
+        )}
     </>
   );
 }
