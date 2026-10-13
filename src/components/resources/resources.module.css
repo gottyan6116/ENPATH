@@ -667,8 +667,7 @@
     width: 100%;
   }
   .bottomPhoto {
-    justify-self: center;
-    width: min(64%, 260px);
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
