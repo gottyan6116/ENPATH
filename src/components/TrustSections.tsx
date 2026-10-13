@@ -57,53 +57,7 @@ export function Coach() {
     </section>
   );
 }
-export function Pricing() {
-  const pricing = service.pricing;
-  return (
-    <section id="pricing" className="section pricing-section">
-      <div className="container pricing-layout">
-        <div>
-          <SectionHeading label="PRICING">
-            あなたに合った
-            <br />
-            学習サポートを。
-          </SectionHeading>
-          <p className="body-copy">
-            目標も、使える時間も、一人ひとり違うから。
-            <br />
-            納得して始められるよう、
-            <br />
-            サポート内容と条件を明確にご案内します。
-          </p>
-          <BookingLink />
-        </div>
-        <div className="pricing-panel">
-          <div className="pricing-panel-head">
-            <span className="eyebrow">PERSONAL ENGLISH COACHING</span>
-            <h3>{pricing.price ?? "料金プランは、現在準備中です。"}</h3>
-            <p>正式な料金・条件は、確定後にご案内します。</p>
-          </div>
-          <dl>
-            {[
-              ["契約期間", pricing.duration],
-              ["面談頻度", pricing.meetings],
-              ["支援範囲", pricing.support],
-              ["契約・解約条件", pricing.conditions],
-            ].map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value ?? "準備中"}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="sample-note">
-            お申し込み前に、料金・期間・支援内容・各種条件をご確認いただけるようにします。
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
+export { PricingSection as Pricing } from "./pricing/PricingSection";
 export function FAQ() {
   return (
     <section id="faq" className="section faq-section">
