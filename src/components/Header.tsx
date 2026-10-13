@@ -12,6 +12,7 @@ const links = [
   ["よくある質問", "/#faq"],
   ["アプリ", "/app"],
   ["ENPATH JOURNAL", "/journal"],
+  ["お役立ち資料", "/resources"],
 ];
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -141,7 +142,8 @@ export function Header() {
               onClick={closeAll}
               aria-current={
                 (href === "/journal" && pathname.startsWith("/journal")) ||
-                (href === "/app" && pathname.startsWith("/app"))
+                (href === "/app" && pathname.startsWith("/app")) ||
+                (href === "/resources" && pathname.startsWith("/resources"))
                   ? "page"
                   : undefined
               }
@@ -205,7 +207,8 @@ export function Header() {
             onClick={closeAll}
             aria-current={
               (href === "/journal" && pathname.startsWith("/journal")) ||
-              (href === "/app" && pathname.startsWith("/app"))
+              (href === "/app" && pathname.startsWith("/app")) ||
+              (href === "/resources" && pathname.startsWith("/resources"))
                 ? "page"
                 : undefined
             }

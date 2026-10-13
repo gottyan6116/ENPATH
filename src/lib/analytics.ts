@@ -10,7 +10,12 @@ type EventName =
   | "journal_article_view"
   | "journal_category_select"
   | "journal_cta_click"
-  | "journal_related_article_click";
+  | "journal_related_article_click"
+  | "resource_card_click"
+  | "resource_form_start"
+  | "resource_form_submit"
+  | "resource_download"
+  | "resource_consultation_click";
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
