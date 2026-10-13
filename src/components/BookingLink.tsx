@@ -9,12 +9,14 @@ export function BookingLink({
   light = false,
   final = false,
   placement,
+  label = "無料カウンセリングを予約する",
 }: {
   hero?: boolean;
   compact?: boolean;
   light?: boolean;
   final?: boolean;
   placement?: string;
+  label?: string;
 }) {
   if (final && !bookingUrl)
     return (
@@ -38,7 +40,7 @@ export function BookingLink({
           });
       }}
     >
-      無料カウンセリングを予約する
+      {label}
       {bookingUrl ? <ArrowUpRight size={19} /> : <ArrowRight size={19} />}
     </a>
   );

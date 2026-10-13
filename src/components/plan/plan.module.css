@@ -13,7 +13,7 @@
 /* ---------- hero (full viewport minus the 92px header) ---------- */
 .hero {
   position: relative;
-  min-height: max(560px, calc(100svh - 92px));
+  min-height: max(560px, calc(100svh - 78px));
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -89,7 +89,7 @@
 /* ---------- shared section ---------- */
 .section {
   padding-block: clamp(56px, 6vw, 100px);
-  scroll-margin-top: 92px;
+  scroll-margin-top: 78px;
 }
 .tint {
   background: #f5f8f7;

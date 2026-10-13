@@ -211,7 +211,7 @@ section[id] {
   border-bottom: 1px solid rgba(15, 45, 74, 0.07);
 }
 .header-inner {
-  height: 92px;
+  height: 78px;
   max-width: 1536px;
   margin: auto;
   padding: 0 48px;
@@ -265,6 +265,25 @@ section[id] {
 }
 .header-cta {
   margin-left: 8px;
+  flex-shrink: 0;
+}
+/* Compact one-line header CTA ("無料相談を予約 ↗"); scoped so other buttons are untouched. */
+.header .header-cta .button {
+  min-height: 44px;
+  min-width: 164px;
+  padding: 0 22px;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.header .header-cta .button:hover {
+  transform: none;
+}
+.header .header-cta .button svg {
+  width: 16px;
+  height: 16px;
 }
 .menu-toggle {
   display: none;

@@ -153,7 +153,7 @@ export function Header() {
           ))}
         </nav>
         <div className="header-cta">
-          <BookingLink compact />
+          <BookingLink compact label="無料相談を予約" />
         </div>
         <button
           ref={toggle}
