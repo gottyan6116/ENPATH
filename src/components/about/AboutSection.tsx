@@ -1,15 +1,15 @@
 import Image from "next/image";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight, Brain, Clock, Flag, TrendingUp, UserRound } from "lucide-react";
 import { JournalReveal } from "@/components/journal/JournalReveal";
 import "@fontsource-variable/noto-serif-jp";
 import s from "./about.module.css";
 
 const concerns = [
-  "何から勉強すればよいかわからない",
-  "自分に合った学習方法がわからない",
-  "やる気はあるのに、なかなか続かない",
-  "勉強していても、成長を実感できない",
-  "目標までの道筋が、まだ見えない",
+  { Icon: Brain, title: "何から勉強すればよいかわからない", sub: "情報が多すぎて、何を優先すればよいか判断できない。" },
+  { Icon: UserRound, title: "自分に合った学習方法がわからない", sub: "独学が続かず、今のやり方で良いのか自信がない。" },
+  { Icon: Clock, title: "やる気はあるのに、なかなか続かない", sub: "忙しくて中断が続けば、三日坊主になってしまう。" },
+  { Icon: TrendingUp, title: "勉強していても、成長を実感できない", sub: "努力しているのに、なかなか成果が見えない。" },
+  { Icon: Flag, title: "目標までの道筋が、まだ見えない", sub: "いつまでに、どのレベルを目指せばよいのか分からない。" },
 ];
 
 const img = (name: string) => `/images/about/${name}.webp`;
@@ -26,6 +26,13 @@ export function AboutSection() {
             <br />
             ありませんか？
           </h2>
+          <p className={s.lead}>
+            頑張りたい気持ちは、もうある。
+            <br />
+            必要なのは、自分に合った進め方と、
+            <br />
+            一緒に考えてくれる人かもしれません。
+          </p>
         </div>
 
         <div className={s.stage}>
@@ -46,24 +53,28 @@ export function AboutSection() {
           <Image className={`${s.pic} ${s.hand}`} src={img("handwriting")} alt="自分に合った学び方で、前に進める。" width={900} height={565} sizes="(max-width: 760px) 38vw, 24vw" />
         </div>
 
-        <div className={s.copy}>
-          <p className={s.lead}>
-            頑張りたい気持ちは、もうある。
-            <br />
-            必要なのは、自分に合った進め方と、
-            <br />
-            一緒に考えてくれる人かもしれません。
-          </p>
+        <div role="list" aria-label="英語学習でよくある5つの悩み">
+        <JournalReveal className={s.bubbles}>
+          {concerns.map(({ Icon, title, sub }) => (
+            <div role="listitem" key={title} className={s.bubble}>
+              <span className={s.bubbleIcon}>
+                <Icon size={30} strokeWidth={1.4} aria-hidden="true" />
+              </span>
+              <span className={s.bubbleText}>
+                <strong>{title}</strong>
+                <span>{sub}</span>
+              </span>
+            </div>
+          ))}
+        </JournalReveal>
         </div>
 
-        <JournalReveal className={s.list}>
-          {concerns.map((text, i) => (
-            <a key={text} href="#approach" className={s.item}>
-              <span className={s.no}>{String(i + 1).padStart(2, "0")}</span>
-              <span className={s.text}>{text}</span>
-              <ChevronRight size={18} aria-hidden="true" className={s.chev} />
-            </a>
-          ))}
+        <JournalReveal className={s.message}>
+          <p>
+            悩みも、目指す未来も、<wbr />一人ひとり違うから。
+            <span>ENPATHが、あなたに合った学び方を一緒に考えます。</span>
+          </p>
+          <Image className={s.thinker} src={img("thinker")} alt="" width={700} height={673} sizes="(max-width: 760px) 28vw, 18vw" aria-hidden="true" />
         </JournalReveal>
 
         <a href="#approach" className={s.more}>
