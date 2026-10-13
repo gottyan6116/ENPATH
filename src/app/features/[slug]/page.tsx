@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { FeaturePage, featureMetadata } from "@/components/FeaturePage";
 import { featureDetails, type FeatureKey } from "@/content/features";
 const slugs = Object.keys(featureDetails).filter(
-  (key) => key !== "overview" && key !== "steps",
+  (key) => key !== "overview" && key !== "steps" && key !== "learning-plan",
 );
 export const dynamicParams = false;
 export function generateStaticParams() {
