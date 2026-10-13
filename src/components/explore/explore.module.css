@@ -1,0 +1,176 @@
+.section {
+  --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  background: #f6f8f9;
+  padding-block: clamp(56px, 6vw, 96px);
+  text-align: center;
+}
+.wrap {
+  max-width: 1120px;
+}
+.eyebrow {
+  font: 600 12px/1.5 var(--font-en);
+  letter-spacing: 0.22em;
+  color: var(--teal-dark);
+}
+.section h2 {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.6vw, 38px);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+  color: var(--navy);
+  margin: 14px 0 12px;
+}
+.lead {
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.9;
+  color: #4a5b66;
+  letter-spacing: 0.04em;
+}
+.grid {
+  margin-top: clamp(32px, 3.6vw, 52px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.2vw, 30px) clamp(20px, 3vw, 44px);
+  text-align: left;
+}
+.card {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2vw, 30px);
+  min-height: 168px;
+  padding: 18px clamp(22px, 2.4vw, 36px) 18px clamp(22px, 2.6vw, 40px);
+  border-radius: 84px 96px 80px 100px / 76px 82px 78px 84px;
+  color: var(--navy);
+  transition: transform 0.3s, background-color 0.3s;
+  position: relative;
+  top: 0;
+}
+.mint { background: #eaf7f4; }
+.cream { background: #faf4e9; }
+.mint:hover { background: #def2ee; }
+.cream:hover { background: #f6ecd9; }
+.card:hover { top: -3px; }
+.card:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 4px;
+}
+.figure {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: clamp(110px, 12vw, 150px);
+  height: 132px;
+}
+.figure img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  justify-items: start;
+}
+.body strong {
+  font-family: var(--serif);
+  font-size: clamp(17px, 1.5vw, 22px);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+  white-space: pre-line;
+  word-break: auto-phrase;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.6;
+  color: #3d5560;
+}
+.link span {
+  text-wrap: pretty;
+  word-break: auto-phrase;
+}
+.link svg {
+  flex: none;
+  color: var(--teal-dark);
+  transition: transform 0.25s;
+}
+.card:hover .link svg {
+  transform: translateX(4px);
+}
+
+@media (max-width: 1100px) {
+  .card {
+    min-height: 150px;
+    padding-inline: 22px 28px;
+  }
+  .figure {
+    width: 100px;
+    height: 112px;
+  }
+}
+@media (max-width: 760px) {
+  .section {
+    padding-block: 48px 56px;
+  }
+  .wrap {
+    padding-inline: 20px;
+  }
+  .section h2 {
+    font-size: 24px;
+    text-wrap: balance;
+  }
+  .lead {
+    font-size: 13px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .card {
+    min-height: 104px;
+    gap: 12px;
+    padding: 14px 16px 14px 12px;
+    border-radius: 56px 64px 52px 68px / 50px 52px 54px 50px;
+  }
+  .figure {
+    width: 76px;
+    height: 88px;
+  }
+  .body {
+    gap: 6px;
+  }
+  .body strong {
+    font-size: 15.5px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+  .link {
+    font-size: 12px;
+    gap: 4px;
+  }
+  .link svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .link svg {
+    transition: none;
+  }
+  .card:hover {
+    top: 0;
+  }
+  .card:hover .link svg {
+    transform: none;
+  }
+}

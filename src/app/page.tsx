@@ -1,4 +1,4 @@
-import { FeatureExplorer } from "@/components/FeatureExplorer";
+import { ExploreSection } from "@/components/explore/ExploreSection";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import {
@@ -32,7 +32,7 @@ export default function Home() {
         <Hero />
         <PainPoints />
         <Goals />
-        <FeatureExplorer />
+        <ExploreSection />
         <Approach />
         <Roadmap />
         <Support />
