@@ -16,6 +16,8 @@ import { ServiceObserver } from "@/components/ServiceObserver";
 import { ScrollExperience } from "@/components/ScrollExperience";
 import { siteUrl } from "@/lib/config";
 import "./home-mobile.css";
+import "./mobile-fv.css";
+import { MobileHero } from "@/components/MobileHero";
 import { JournalTeaser } from "@/components/journal/Journal";
 export default function Home() {
   return (
@@ -26,6 +28,7 @@ export default function Home() {
       <div id="top" />
       <Header />
       <main id="main" className="home-main">
+        <MobileHero />
         <Hero />
         <PainPoints />
         <Goals />

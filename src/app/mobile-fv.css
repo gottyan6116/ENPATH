@@ -1,0 +1,142 @@
+/* Mobile first view (proposal C). Hidden everywhere except phones, so desktop is untouched. */
+.mfv {
+  display: none;
+}
+@media (max-width: 760px) {
+  .home-main .hero-stage {
+    display: none;
+  }
+  .home-main .mfv {
+    display: block;
+    --serif: "Noto Serif JP Variable", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #eaf3f7 0%, #f6f9fb 34%, #fff 56%);
+    padding-bottom: 28px;
+  }
+  .mfv-visual {
+    position: relative;
+    height: min(98vw, 420px);
+  }
+  .mfv-london {
+    position: absolute;
+    left: -8%;
+    top: 26%;
+    width: 76%;
+    height: auto;
+    opacity: 0.95;
+  }
+  .mfv-woman {
+    position: absolute;
+    right: 0;
+    top: 1%;
+    width: 60%;
+    height: auto;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 68%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 68%, transparent 100%);
+  }
+  .mfv-hand {
+    position: absolute;
+    left: 3%;
+    top: 5%;
+    width: 47%;
+    height: auto;
+  }
+  .mfv-body {
+    position: relative;
+    margin-top: -34px;
+    padding: 0 22px;
+    z-index: 2;
+  }
+  .mfv-label {
+    font: 500 11.5px/1.5 var(--font-en);
+    letter-spacing: 0.18em;
+    color: var(--teal-dark);
+  }
+  .mfv-title {
+    margin: 10px 0 14px;
+    font-family: var(--serif);
+    font-size: clamp(27px, 8.4vw, 36px);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    color: var(--navy);
+  }
+  .mfv-text {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: #31424f;
+  }
+  .mfv-cta {
+    margin-top: 22px;
+  }
+  .mfv-cta .button {
+    width: 100%;
+    min-height: 54px;
+    padding-inline: 16px;
+    gap: 12px;
+    white-space: nowrap;
+  }
+  .mfv-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--navy);
+    border-bottom: 1px solid var(--navy);
+    align-self: flex-start;
+  }
+  .mfv-scenes {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0 22px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    text-align: center;
+  }
+  .mfv-scenes li {
+    display: grid;
+    gap: 8px;
+  }
+  .mfv-scenes img {
+    width: 100%;
+    aspect-ratio: 1.3 / 1;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .mfv-scenes span {
+    font-size: 12px;
+    color: var(--navy);
+    letter-spacing: 0.04em;
+  }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+  .mfv-woman,
+  .mfv-london,
+  .mfv-hand,
+  .mfv-body > *,
+  .mfv-scenes {
+    animation: mfv-in 0.8s ease-out both;
+  }
+  .mfv-woman {
+    animation-delay: 0.05s;
+  }
+  .mfv-hand {
+    animation-delay: 0.2s;
+  }
+  .mfv-body > * {
+    animation-delay: 0.3s;
+  }
+  .mfv-scenes {
+    animation-delay: 0.5s;
+  }
+}
+@keyframes mfv-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
